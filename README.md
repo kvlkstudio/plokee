@@ -246,4 +246,4 @@ separately. Until a dedicated license file is provided, use, copying,
 modification, and distribution require written permission from KVLK Studio.
 
 
-# 🇺🇦 Proudly crafted in Ukrainr by kvlkstudio.com
+# 🇺🇦 Proudly crafted in Ukraine by [kvlkstudio.com](https://kvlkstudio.com)

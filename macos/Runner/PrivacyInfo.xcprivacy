@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Plokee syncs the clipboard directly between the user's own devices on
+	     the local network. Nothing is sent to a server, and there is no
+	     analytics, advertising or tracking SDK. -->
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<!-- Required-reason APIs used by dependencies are declared in their own
+	     manifests (shared_preferences_foundation, path_provider_foundation).
+	     This target reads no file timestamps, disk space or system boot time. -->
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array/>
+</dict>
+</plist>

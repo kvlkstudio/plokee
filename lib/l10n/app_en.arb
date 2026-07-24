@@ -1,0 +1,110 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Plokee",
+  "@appTitle": { "description": "Application name, shown in the window title and header." },
+
+  "statusConnected": "Connected",
+  "statusConnecting": "Connecting…",
+  "statusIdle": "Idle",
+  "statusOffline": "Offline",
+  "statusPaired": "Paired",
+  "connectedDevices": "{count} connected",
+  "@connectedDevices": { "placeholders": { "count": { "type": "int" } } },
+
+  "sync": "Sync",
+  "settings": "Settings",
+  "language": "Language",
+  "languageSystem": "System",
+  "devices": "Devices",
+  "history": "History",
+  "cancel": "Cancel",
+  "clear": "Clear",
+  "done": "Done",
+  "pair": "Pair",
+  "unpair": "Unpair",
+  "decline": "Decline",
+  "save": "Save",
+  "share": "Share",
+  "copy": "Copy",
+  "copied": "Copied",
+
+  "lookingForDevices": "Looking for devices…",
+  "openPlokeeOnAnotherDevice": "Open Plokee on another device\non the same network.",
+  "newDeviceAt": "New · {address}",
+  "@newDeviceAt": { "placeholders": { "address": { "type": "String" } } },
+
+  "pairingWith": "Pairing with “{name}”",
+  "@pairingWith": { "placeholders": { "name": { "type": "String" } } },
+  "pairingRequest": "Pairing request",
+  "pairingFailed": "Pairing failed",
+  "confirmOnOtherDevice": "Confirm on the other device. Both devices should show this code:",
+  "wantsToPair": "“{name}” ({platform}) wants to pair.",
+  "@wantsToPair": {
+    "placeholders": { "name": { "type": "String" }, "platform": { "type": "String" } }
+  },
+  "nowConnected": "“{name}” is now connected. Your clipboard will sync automatically.",
+  "@nowConnected": { "placeholders": { "name": { "type": "String" } } },
+  "makeSureSameCode": "Make sure both devices show the same code:",
+  "requestDeclinedOrTimedOut": "The request was declined or timed out.",
+
+  "nothingCopiedYet": "Nothing copied yet",
+  "copiesShowUpHere": "Copies show up here and sync\nto your paired devices.",
+  "clearHistory": "Clear history",
+  "clearHistoryQuestion": "Clear history?",
+  "clearHistoryExplanation": "This removes all saved clips on this device. Paired devices keep their own history.",
+
+  "fromDeviceAtTime": "From {name} · {time}",
+  "@fromDeviceAtTime": {
+    "placeholders": { "name": { "type": "String" }, "time": { "type": "String" } }
+  },
+  "imageWithSize": "Image ({size})",
+  "@imageWithSize": { "placeholders": { "size": { "type": "String" } } },
+
+  "openInBrowser": "Open in browser",
+  "writeEmail": "Write email",
+  "saveImage": "Save image",
+  "showInFolder": "Show in folder",
+  "imageSaved": "Image saved",
+  "couldNotSaveImage": "Could not save the image",
+  "couldNotOpenLink": "Could not open the link",
+  "couldNotOpenFolder": "Could not open the folder",
+  "imageNoLongerAvailable": "This image is no longer available",
+  "filesNoLongerAvailable": "These files are no longer available",
+
+  "sendClipboard": "Send clipboard",
+  "clipboardSent": "Clipboard sent",
+  "nothingNewToSend": "Nothing new to send",
+
+  "deviceName": "Device name",
+  "deviceNameExplanation": "How this device appears to others.",
+  "syncClipboard": "Sync clipboard",
+  "syncClipboardExplanation": "Send and receive clips with paired devices.",
+  "readClipboardOnOpen": "Read clipboard on open",
+  "readClipboardOnOpenExplanation": "Check the clipboard automatically when the app comes to the front.",
+  "keepSyncingInBackground": "Keep syncing in background",
+  "keepSyncingInBackgroundExplanation": "Stay connected when Plokee is minimized. Shows a permanent notification.",
+
+  "couldNotStart": "Couldn’t start",
+
+  "trayOpenPlokee": "Open Plokee",
+  "trayCheckClipboardNow": "Check clipboard now",
+  "trayRecentClipboard": "Recent clipboard",
+  "traySyncClipboard": "Sync clipboard",
+  "trayQuit": "Quit",
+  "traySyncIsOn": "Sync is on",
+  "traySyncIsPaused": "Sync is paused",
+  "trayStatusLine": "{status} · {online} of {total} devices online",
+  "@trayStatusLine": {
+    "placeholders": {
+      "status": { "type": "String" },
+      "online": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "notificationChannelName": "Clipboard sync",
+  "notificationChannelDescription": "Keeps Plokee connected to your paired devices.",
+  "notificationTitle": "Plokee is syncing",
+  "notificationText": "Connected to your paired devices"
+}

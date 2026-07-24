@@ -124,6 +124,35 @@ class AppLocalizationsVi extends AppLocalizations {
   String get requestDeclinedOrTimedOut => 'Yêu cầu đã bị từ chối hoặc hết hạn.';
 
   @override
+  String get addByIp => 'Device not showing up? Add by IP';
+
+  @override
+  String get addByIpTitle => 'Add device by IP';
+
+  @override
+  String get addByIpExplanation =>
+      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+
+  @override
+  String get ipAddress => 'IP address';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get searching => 'Searching…';
+
+  @override
+  String thisDeviceAddress(String address) {
+    return 'This device: $address';
+  }
+
+  @override
+  String noDeviceAtIp(String address) {
+    return 'No Plokee device found at $address';
+  }
+
+  @override
   String get nothingCopiedYet => 'Chưa sao chép gì';
 
   @override

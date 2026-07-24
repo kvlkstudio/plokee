@@ -337,6 +337,54 @@ abstract class AppLocalizations {
   /// **'The request was declined or timed out.'**
   String get requestDeclinedOrTimedOut;
 
+  /// No description provided for @addByIp.
+  ///
+  /// In en, this message translates to:
+  /// **'Device not showing up? Add by IP'**
+  String get addByIp;
+
+  /// No description provided for @addByIpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add device by IP'**
+  String get addByIpTitle;
+
+  /// No description provided for @addByIpExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.'**
+  String get addByIpExplanation;
+
+  /// No description provided for @ipAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'IP address'**
+  String get ipAddress;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @searching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching…'**
+  String get searching;
+
+  /// No description provided for @thisDeviceAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'This device: {address}'**
+  String thisDeviceAddress(String address);
+
+  /// No description provided for @noDeviceAtIp.
+  ///
+  /// In en, this message translates to:
+  /// **'No Plokee device found at {address}'**
+  String noDeviceAtIp(String address);
+
   /// No description provided for @nothingCopiedYet.
   ///
   /// In en, this message translates to:

@@ -124,6 +124,35 @@ class AppLocalizationsRu extends AppLocalizations {
   String get requestDeclinedOrTimedOut => 'Запрос отклонён или истёк.';
 
   @override
+  String get addByIp => 'Устройство не видно? Добавить по IP';
+
+  @override
+  String get addByIpTitle => 'Добавить устройство по IP';
+
+  @override
+  String get addByIpExplanation =>
+      'Некоторые сети скрывают устройства друг от друга. Введите IP-адрес другого устройства, чтобы связать напрямую.';
+
+  @override
+  String get ipAddress => 'IP-адрес';
+
+  @override
+  String get add => 'Добавить';
+
+  @override
+  String get searching => 'Поиск…';
+
+  @override
+  String thisDeviceAddress(String address) {
+    return 'Это устройство: $address';
+  }
+
+  @override
+  String noDeviceAtIp(String address) {
+    return 'По адресу $address устройство Plokee не найдено';
+  }
+
+  @override
   String get nothingCopiedYet => 'Пока ничего не скопировано';
 
   @override

@@ -119,6 +119,89 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  /// Manual pairing for networks that block discovery: type the other
+  /// device's IP, fetch its info over unicast, then run the normal pair flow.
+  Future<void> _addByIp() async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController();
+    final localAddrs = await state.localAddresses();
+    if (!mounted) return;
+    await showAppDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        var searching = false;
+        String? error;
+        return StatefulBuilder(
+          builder: (dialogContext, setLocal) {
+            Future<void> submit() async {
+              final ip = controller.text.trim();
+              if (ip.isEmpty || searching) return;
+              setLocal(() {
+                searching = true;
+                error = null;
+              });
+              final device = await state.findDeviceAt(ip);
+              if (!dialogContext.mounted) return;
+              if (device == null) {
+                setLocal(() {
+                  searching = false;
+                  error = l10n.noDeviceAtIp(ip);
+                });
+                return;
+              }
+              Navigator.of(dialogContext).pop();
+              _startPairing(device);
+            }
+
+            return AppDialogLayout(
+              title: l10n.addByIpTitle,
+              body: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.addByIpExplanation,
+                      style: TextStyle(color: context.palette.textSecondary)),
+                  if (localAddrs.isNotEmpty) ...[
+                    const SizedBox(height: AppSpace.md),
+                    Text(l10n.thisDeviceAddress(localAddrs.first),
+                        style: TextStyle(
+                            fontSize: 12.5, color: context.palette.textTertiary)),
+                  ],
+                  const SizedBox(height: AppSpace.md),
+                  AppTextField(
+                    controller: controller,
+                    autofocus: true,
+                    hint: l10n.ipAddress,
+                    keyboardType: TextInputType.url,
+                    onSubmitted: (_) => submit(),
+                  ),
+                  if (error != null) ...[
+                    const SizedBox(height: AppSpace.sm),
+                    Text(error!,
+                        style: TextStyle(
+                            fontSize: 12.5, color: context.palette.danger)),
+                  ],
+                ],
+              ),
+              actions: [
+                AppButton(
+                  label: l10n.cancel,
+                  variant: AppButtonVariant.ghost,
+                  onPressed:
+                      searching ? null : () => Navigator.of(dialogContext).pop(),
+                ),
+                AppButton(
+                  label: searching ? l10n.searching : l10n.add,
+                  onPressed: searching ? null : submit,
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   Future<void> _editDeviceName() async {
     final l10n = AppLocalizations.of(context);
     final controller = TextEditingController(text: state.settings.deviceName);
@@ -467,7 +550,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _content(BuildContext context) {
-    final peers = state.settings.peers;
+    final peers = state.visiblePeers;
     final foundDevices = state.unpairedFound;
 
     return ListView(
@@ -477,7 +560,15 @@ class _HomePageState extends State<HomePage> {
         _SectionLabel(AppLocalizations.of(context).devices),
         const SizedBox(height: AppSpace.sm),
         _devicesPanel(context, peers, foundDevices),
-        const SizedBox(height: AppSpace.xl),
+        const SizedBox(height: AppSpace.sm),
+        Center(
+          child: AppButton(
+            label: AppLocalizations.of(context).addByIp,
+            variant: AppButtonVariant.ghost,
+            onPressed: _addByIp,
+          ),
+        ),
+        const SizedBox(height: AppSpace.lg),
         Row(
           children: [
             Expanded(child: _SectionLabel(AppLocalizations.of(context).history)),

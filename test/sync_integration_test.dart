@@ -86,6 +86,16 @@ void main() {
     expect(storeA.peerById('zzzz'), isNotNull);
     expect(storeB.peerById('aaaa'), isNotNull);
 
+    // Pairing itself records where each side can reach the other, so the
+    // reconnect loop can dial straight away without waiting on discovery to
+    // resolve the peer a second time (which on the Bonjour-only iOS↔Android
+    // link may never happen). Requester B keeps A's discovered address and
+    // advertised port; responder A keeps the socket B reached it on.
+    expect(storeB.peerById('aaaa')!.lastAddress, '127.0.0.1');
+    expect(storeB.peerById('aaaa')!.lastPort, engineA.port);
+    expect(storeA.peerById('zzzz')!.lastAddress, '127.0.0.1');
+    expect(storeA.peerById('zzzz')!.lastPort, engineB.port);
+
     // A (smaller id) dials B, handshake authenticates both sides. The first
     // candidate is a black hole — discovery hands over whatever the responder
     // answered, and only some of those addresses route — so the dialler has to
@@ -223,6 +233,60 @@ void main() {
       hasLength(1),
       reason: 'every copy of the replay must carry the same timestamp',
     );
+  });
+
+  test('probeDevice finds a peer by address alone, skipping itself', () async {
+    // The multicast-blocked-network path: no discovery, just an IP. probing
+    // the port range over unicast HTTP must return the *other* engine, never
+    // the prober's own /info (which answers on its port too).
+    final storeA =
+        SettingsStore.inMemory(deviceId: 'aaaa', deviceName: 'Device A');
+    final storeB =
+        SettingsStore.inMemory(deviceId: 'zzzz', deviceName: 'Device B');
+    final cryptoA = await CryptoService.fromSeed(storeA.keySeed);
+    final cryptoB = await CryptoService.fromSeed(storeB.keySeed);
+
+    late SyncEngine engineA;
+    late SyncEngine engineB;
+    engineA = SyncEngine(
+      settings: storeA,
+      crypto: cryptoA,
+      localInfo: () => DeviceInfo(
+          id: 'aaaa',
+          name: 'Device A',
+          platform: 'android',
+          publicKey: cryptoA.publicKeyBase64,
+          port: engineA.port),
+      onPairRequest: (_) async => false,
+      onRemoteClip: (_, _) {},
+      onConnectionsChanged: () {},
+    );
+    engineB = SyncEngine(
+      settings: storeB,
+      crypto: cryptoB,
+      localInfo: () => DeviceInfo(
+          id: 'zzzz',
+          name: 'Device B',
+          platform: 'ios',
+          publicKey: cryptoB.publicKeyBase64,
+          port: engineB.port),
+      onPairRequest: (_) async => false,
+      onRemoteClip: (_, _) {},
+      onConnectionsChanged: () {},
+    );
+    await engineA.start();
+    await engineB.start();
+    addTearDown(() async {
+      await engineA.stop();
+      await engineB.stop();
+    });
+
+    final found = await engineA.probeDevice('127.0.0.1');
+    expect(found, isNotNull);
+    expect(found!.info.id, 'zzzz', reason: 'never the prober itself');
+    expect(found.info.name, 'Device B');
+    expect(found.info.port, engineB.port);
+    expect(found.address, '127.0.0.1');
   });
 
   test('unpaired device cannot open an authenticated channel', () async {

@@ -24,6 +24,14 @@ class SyncEngine {
   static const int portRangeStart = 45655;
   static const int portRangeEnd = 45675;
 
+  /// How often each socket sends a WebSocket ping.
+  ///
+  /// Without it a peer that vanishes (phone sleeps, Wi-Fi drops, app killed)
+  /// leaves a half-open socket that never fires `onDone`, so we keep thinking
+  /// we are connected and never redial. A ping turns a dead link into a clean
+  /// close within a couple of intervals, which the reconnect loop then heals.
+  static const Duration keepAliveInterval = Duration(seconds: 10);
+
   final SettingsStore settings;
   final CryptoService crypto;
   final DeviceInfo Function() localInfo;
@@ -107,6 +115,9 @@ class SyncEngine {
   // ---- Pairing (responder side) ----
 
   Future<void> _handlePair(HttpRequest request) async {
+    // The socket the requester reached us on is where we can reach it back —
+    // stored now so the reconnect loop has a target before discovery re-fires.
+    final remoteAddress = request.connectionInfo?.remoteAddress.address;
     final body = await utf8.decoder.bind(request).join();
     final info = DeviceInfo.tryParse(jsonDecode(body) as Map<String, dynamic>);
     if (info == null) {
@@ -133,6 +144,8 @@ class SyncEngine {
         name: info.name,
         platform: info.platform,
         secret: base64Encode(secret),
+        lastAddress: remoteAddress,
+        lastPort: info.port,
       ));
       _writeJson(request.response, {'accepted': true, ...localInfo().toJson()});
     } else {
@@ -168,6 +181,8 @@ class SyncEngine {
             name: device.info.name,
             platform: device.info.platform,
             secret: base64Encode(secret),
+            lastAddress: device.address,
+            lastPort: device.info.port,
           ));
           return true;
         }
@@ -179,6 +194,41 @@ class SyncEngine {
       }
     }();
     return (code, result);
+  }
+
+  /// Looks up a device by [address] alone, for pairing without discovery.
+  ///
+  /// On networks that drop multicast between wireless clients, two phones never
+  /// see each other over mDNS even though they can reach each other directly.
+  /// The `/info` endpoint answers over plain unicast HTTP, so probing the port
+  /// range turns a hand-typed IP into a [FoundDevice] the normal pairing flow
+  /// accepts. Returns null if nothing on that address is a Plokee peer.
+  Future<FoundDevice?> probeDevice(String address) async {
+    final client = HttpClient()
+      ..connectionTimeout = const Duration(seconds: 2);
+    try {
+      for (var p = portRangeStart; p <= portRangeEnd; p++) {
+        try {
+          final req = await client.getUrl(Uri.parse('http://$address:$p/info'));
+          final res = await req.close().timeout(const Duration(seconds: 2));
+          if (res.statusCode != HttpStatus.ok) {
+            await res.drain<void>();
+            continue;
+          }
+          final body = await utf8.decoder.bind(res).join();
+          final info =
+              DeviceInfo.tryParse(jsonDecode(body) as Map<String, dynamic>);
+          // Skip ourselves — every port we bind answers /info too.
+          if (info == null || info.id == settings.deviceId) continue;
+          return FoundDevice(info: info, address: address);
+        } catch (_) {
+          // Refused/unfilled port: fails fast on a reachable host, so move on.
+        }
+      }
+      return null;
+    } finally {
+      client.close(force: true);
+    }
   }
 
   // ---- WebSocket transport ----
@@ -194,6 +244,7 @@ class SyncEngine {
       return;
     }
     final socket = await WebSocketTransformer.upgrade(request);
+    socket.pingInterval = keepAliveInterval;
     Peer? authed;
     final authTimeout = Timer(const Duration(seconds: 10), () {
       if (authed == null) socket.close();
@@ -277,6 +328,7 @@ class SyncEngine {
     try {
       final socket = await WebSocket.connect('ws://$address:$peerPort/ws')
           .timeout(const Duration(seconds: 5));
+      socket.pingInterval = keepAliveInterval;
       final secret = base64Decode(peer.secret);
       final nonce = CryptoService.randomNonceBase64();
 

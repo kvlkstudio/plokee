@@ -48,6 +48,17 @@
   "makeSureSameCode": "Make sure both devices show the same code:",
   "requestDeclinedOrTimedOut": "The request was declined or timed out.",
 
+  "addByIp": "Device not showing up? Add by IP",
+  "addByIpTitle": "Add device by IP",
+  "addByIpExplanation": "Some networks hide devices from each other. Enter the other device's IP address to pair directly.",
+  "ipAddress": "IP address",
+  "add": "Add",
+  "searching": "Searching…",
+  "thisDeviceAddress": "This device: {address}",
+  "@thisDeviceAddress": { "placeholders": { "address": { "type": "String" } } },
+  "noDeviceAtIp": "No Plokee device found at {address}",
+  "@noDeviceAtIp": { "placeholders": { "address": { "type": "String" } } },
+
   "nothingCopiedYet": "Nothing copied yet",
   "copiesShowUpHere": "Copies show up here and sync\nto your paired devices.",
   "clearHistory": "Clear history",

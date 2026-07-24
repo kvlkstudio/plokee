@@ -33,6 +33,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   static const int historyLimit = 100;
 
   Timer? _pruneTimer;
+  Timer? _reconnectTimer;
   Timer? _historySaveTimer;
   Directory? _saveDir;
 
@@ -103,23 +104,32 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       found.removeWhere((_, d) => d.isStale);
       if (found.length != before) notifyListeners();
     });
+    // Keep paired devices connected without leaning on discovery to re-fire.
+    // On the iOS↔Android link there is no UDP heartbeat and Bonjour resolves a
+    // service just once, so a dropped socket would otherwise never redial.
+    _reconnectTimer = Timer.periodic(
+        const Duration(seconds: 5), (_) => _reconnectKnownPeers());
     _syncForegroundService();
     notifyListeners();
   }
 
-  /// Dials peers at their last known address without waiting for discovery.
+  /// Dials every paired-but-disconnected peer without waiting for discovery.
   ///
-  /// Discovery stays the source of truth — it corrects the address when a peer
-  /// moves — but this removes discovery as a single point of failure for
-  /// already-paired devices, which matters most on iOS where Bonjour is the
-  /// only channel. [SyncEngine.connectTo] swallows failures and enforces the
-  /// deterministic-dialer rule, so a stale address costs nothing but a timeout.
+  /// Runs once at startup and then on a timer. Discovery stays the source of
+  /// truth for a peer that moves, but it is not a reliable *retry* signal: UDP
+  /// re-announces every few seconds, yet Bonjour resolves a service only once,
+  /// so the iOS↔Android link (Bonjour-only, no UDP) would never redial after a
+  /// drop. Polling here closes that gap. A currently-discovered address wins
+  /// over the persisted one; [SyncEngine.connectTo] no-ops when already
+  /// connected or dialling and enforces the deterministic-dialer rule, so an
+  /// idle tick or a stale address costs nothing but a timeout.
   void _reconnectKnownPeers() {
     for (final peer in settings.peers) {
-      final address = peer.lastAddress;
-      final port = peer.lastPort;
-      if (address == null || port == null) continue;
       if (engine.isConnected(peer.id)) continue;
+      final seen = found[peer.id];
+      final address = seen?.address ?? peer.lastAddress;
+      final port = seen?.info.port ?? peer.lastPort;
+      if (address == null || port == null) continue;
       engine.connectTo(peer, [address], port);
     }
   }
@@ -336,10 +346,43 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   bool isPeerOnline(String peerId) =>
       engine.isConnected(peerId) || found.containsKey(peerId);
 
+  /// Paired devices worth listing: connected now, or at least visible on the
+  /// network this moment.
+  ///
+  /// A peer that is neither is a dead duplicate — most often a device that was
+  /// reinstalled (a fresh install gets a new device id, so its old paired
+  /// record is orphaned) or simply switched off. Pairing still persists in
+  /// storage so it reconnects the instant it returns, but showing it as a
+  /// permanent "offline" row just clutters the list with ghosts.
+  List<Peer> get visiblePeers => settings.peers
+      .where((p) => engine.isConnected(p.id) || found.containsKey(p.id))
+      .toList();
+
   Future<(String, Future<bool>)> startPairing(FoundDevice device) async {
     final result = await engine.requestPairing(device);
     unawaited(result.$2.then((_) => notifyListeners()));
     return result;
+  }
+
+  /// Finds a device by a hand-typed [address], for pairing on networks that
+  /// hide devices from each other (see [SyncEngine.probeDevice]).
+  Future<FoundDevice?> findDeviceAt(String address) =>
+      engine.probeDevice(address.trim());
+
+  /// This device's own LAN addresses, best first, to show the user what to
+  /// type on the other device. Empty if it has no usable IPv4 address.
+  Future<List<String>> localAddresses() async {
+    try {
+      final interfaces = await NetworkInterface.list(
+        type: InternetAddressType.IPv4,
+        includeLoopback: false,
+      );
+      return rankLanAddresses(
+        interfaces.expand((i) => i.addresses).map((a) => a.address),
+      );
+    } catch (_) {
+      return const [];
+    }
   }
 
   /// Mobile "Send clipboard" button / auto-check on resume.
@@ -435,6 +478,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _pruneTimer?.cancel();
+    _reconnectTimer?.cancel();
     // Flush any pending history write before shutting down.
     if (_historySaveTimer?.isActive ?? false) {
       _historySaveTimer!.cancel();

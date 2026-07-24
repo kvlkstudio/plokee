@@ -505,6 +505,7 @@ class AppTextField extends StatelessWidget {
   final String? hint;
   final bool autofocus;
   final ValueChanged<String>? onSubmitted;
+  final TextInputType? keyboardType;
 
   const AppTextField({
     super.key,
@@ -512,6 +513,7 @@ class AppTextField extends StatelessWidget {
     this.hint,
     this.autofocus = false,
     this.onSubmitted,
+    this.keyboardType,
   });
 
   @override
@@ -521,6 +523,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       autofocus: autofocus,
       onSubmitted: onSubmitted,
+      keyboardType: keyboardType,
       cursorColor: p.accent,
       style: TextStyle(
           fontSize: 14, fontWeight: FontWeight.w500, color: p.textPrimary),

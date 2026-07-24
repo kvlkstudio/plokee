@@ -34,6 +34,18 @@
   "nowConnected": "«{name}» подключено. Буфер обмена будет синхронизироваться автоматически.",
   "makeSureSameCode": "Убедитесь, что на обоих устройствах один и тот же код:",
   "requestDeclinedOrTimedOut": "Запрос отклонён или истёк.",
+
+  "addByIp": "Устройство не видно? Добавить по IP",
+  "addByIpTitle": "Добавить устройство по IP",
+  "addByIpExplanation": "Некоторые сети скрывают устройства друг от друга. Введите IP-адрес другого устройства, чтобы связать напрямую.",
+  "ipAddress": "IP-адрес",
+  "add": "Добавить",
+  "searching": "Поиск…",
+  "thisDeviceAddress": "Это устройство: {address}",
+  "@thisDeviceAddress": { "placeholders": { "address": { "type": "String" } } },
+  "noDeviceAtIp": "По адресу {address} устройство Plokee не найдено",
+  "@noDeviceAtIp": { "placeholders": { "address": { "type": "String" } } },
+
   "nothingCopiedYet": "Пока ничего не скопировано",
   "copiesShowUpHere": "Скопированное появится здесь и синхронизируется\nсо связанными устройствами.",
   "clearHistory": "Очистить историю",

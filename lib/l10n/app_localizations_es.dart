@@ -125,6 +125,35 @@ class AppLocalizationsEs extends AppLocalizations {
       'La solicitud fue rechazada o expiró.';
 
   @override
+  String get addByIp => 'Device not showing up? Add by IP';
+
+  @override
+  String get addByIpTitle => 'Add device by IP';
+
+  @override
+  String get addByIpExplanation =>
+      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+
+  @override
+  String get ipAddress => 'IP address';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get searching => 'Searching…';
+
+  @override
+  String thisDeviceAddress(String address) {
+    return 'This device: $address';
+  }
+
+  @override
+  String noDeviceAtIp(String address) {
+    return 'No Plokee device found at $address';
+  }
+
+  @override
   String get nothingCopiedYet => 'Aún no has copiado nada';
 
   @override

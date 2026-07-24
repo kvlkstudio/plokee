@@ -244,3 +244,6 @@ Copyright © 2026 KVLK Studio. All rights reserved.
 Licensing terms for distribution and commercial use will be published
 separately. Until a dedicated license file is provided, use, copying,
 modification, and distribution require written permission from KVLK Studio.
+
+
+# 🇺🇦 Proudly crafted in Ukrainr by kvlkstudio.com

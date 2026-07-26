@@ -229,7 +229,7 @@ isolation if devices cannot discover each other.
 - [ ] Android quick settings and more complete foreground-service controls.
 - [ ] iOS Share Extension, Shortcuts, and Widget support.
 - [ ] Per-device sync rules.
-- [ ] Additional interface localisations.
+- [x] Additional interface localisations.
 
 ## Contributing
 

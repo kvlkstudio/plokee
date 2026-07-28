@@ -12,6 +12,21 @@ paired devices communicate directly with each other.
 
 **Platforms:** macOS · Windows · Linux · Android · iOS
 
+<p>
+  <a href="https://apps.apple.com/us/app/plokee/id6794129991?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200">
+    <img
+      src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83"
+      alt="Download on the Mac App Store"
+      height="51">
+  </a>
+  <a href="https://apps.apple.com/us/app/plokee/id6794129991?itsct=apps_box_badge&amp;itscg=30200">
+    <img
+      src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
+      alt="Download on the App Store"
+      height="51">
+  </a>
+</p>
+
 ## Features
 
 - Automatic clipboard syncing on desktop platforms.
@@ -79,6 +94,23 @@ Mobile operating systems limit background clipboard access.
 Receiving items works while the app is active on both mobile platforms.
 
 ## Downloading releases
+
+Apple builds are available from the App Store:
+
+<p>
+  <a href="https://apps.apple.com/us/app/plokee/id6794129991?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200">
+    <img
+      src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83"
+      alt="Download on the Mac App Store"
+      height="51">
+  </a>
+  <a href="https://apps.apple.com/us/app/plokee/id6794129991?itsct=apps_box_badge&amp;itscg=30200">
+    <img
+      src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
+      alt="Download on the App Store"
+      height="51">
+  </a>
+</p>
 
 Every version tagged as `v*` is built and published automatically by
 [GitHub Actions](.github/workflows/release.yml). The corresponding

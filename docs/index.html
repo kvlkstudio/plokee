@@ -207,6 +207,32 @@
         margin-top: 32px;
       }
 
+      .store-badges {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .store-badges a {
+        display: inline-flex;
+        overflow: hidden;
+        border-radius: 8px;
+        line-height: 0;
+        transition: transform 0.2s ease;
+      }
+
+      .store-badges a:hover {
+        transform: translateY(-1px);
+      }
+
+      .store-badges img {
+        display: block;
+        width: auto;
+        height: 51px;
+      }
+
       .facts {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -597,7 +623,7 @@
 
       .downloads {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 14px;
       }
 
@@ -744,6 +770,10 @@
           height: 52px;
           font-size: 1.35rem;
         }
+
+        .store-badges img {
+          height: 46px;
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -799,6 +829,20 @@
               <div class="hero-actions">
                 <a class="button" href="https://github.com/kvlkstudio/plokee/releases">Download releases</a>
                 <a class="button secondary" href="https://github.com/kvlkstudio/plokee">View source</a>
+              </div>
+              <div class="store-badges" aria-label="Download Plokee from Apple stores">
+                <a href="https://apps.apple.com/us/app/plokee/id6794129991?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200">
+                  <img
+                    src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83"
+                    alt="Download on the Mac App Store"
+                  >
+                </a>
+                <a href="https://apps.apple.com/us/app/plokee/id6794129991?itsct=apps_box_badge&amp;itscg=30200">
+                  <img
+                    src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
+                    alt="Download on the App Store"
+                  >
+                </a>
               </div>
               <div class="facts" aria-label="Project highlights">
                 <div class="fact"><strong>32 MB</strong><span>per clipboard item</span></div>
@@ -979,8 +1023,8 @@
             <div class="downloads" style="margin-top: 18px">
               <article class="download-card">
                 <h3>macOS</h3>
-                <p>DMG release artifact.</p>
-                <small>Plokee-macos.dmg</small>
+                <p>Available on the Mac App Store and as a DMG release artifact.</p>
+                <small>Mac App Store · Plokee-macos.dmg</small>
               </article>
               <article class="download-card">
                 <h3>Windows</h3>
@@ -997,6 +1041,25 @@
                 <p>Release APK from GitHub releases.</p>
                 <small>Plokee-android-release.apk</small>
               </article>
+              <article class="download-card">
+                <h3>iOS</h3>
+                <p>Available on the App Store for iPhone and iPad.</p>
+                <small>App Store</small>
+              </article>
+            </div>
+            <div class="store-badges" aria-label="Download Plokee from Apple stores">
+              <a href="https://apps.apple.com/us/app/plokee/id6794129991?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200">
+                <img
+                  src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83"
+                  alt="Download on the Mac App Store"
+                >
+              </a>
+              <a href="https://apps.apple.com/us/app/plokee/id6794129991?itsct=apps_box_badge&amp;itscg=30200">
+                <img
+                  src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
+                  alt="Download on the App Store"
+                >
+              </a>
             </div>
           </div>
         </section>

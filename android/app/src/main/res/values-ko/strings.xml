@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_label">Plokee</string>
+    <string name="tile_state_on">클립보드 동기화 켜짐</string>
+    <string name="tile_state_off">클립보드 동기화 꺼짐</string>
+</resources>

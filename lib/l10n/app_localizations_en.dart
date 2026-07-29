@@ -286,4 +286,87 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationText => 'Connected to your paired devices';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$count of $total devices connected';
+  }
+
+  @override
+  String get notificationPaused => 'Sync paused';
+
+  @override
+  String get notificationPause => 'Pause';
+
+  @override
+  String get notificationResume => 'Resume';
+
+  @override
+  String get syncRules => 'Sync rules';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'What this device syncs with “$name”';
+  }
+
+  @override
+  String get ruleSendTo => 'Send to it';
+
+  @override
+  String get ruleSendToExplanation => 'Push what you copy here to that device.';
+
+  @override
+  String get ruleReceiveFrom => 'Receive from it';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'Apply what it copies to this clipboard.';
+
+  @override
+  String get ruleKinds => 'Kinds';
+
+  @override
+  String get ruleText => 'Text';
+
+  @override
+  String get ruleImages => 'Images';
+
+  @override
+  String get ruleFiles => 'Files';
+
+  @override
+  String get ruleSummaryNothing => 'Nothing';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'Receive only';
+
+  @override
+  String get ruleSummarySendOnly => 'Send only';
+
+  @override
+  String get ruleSummaryCustom => 'Custom';
+
+  @override
+  String get transfers => 'Transfers';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'Sending to $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'Receiving from $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done of $total';
+  }
+
+  @override
+  String get transferText => 'Text';
+
+  @override
+  String get transferImage => 'Image';
 }

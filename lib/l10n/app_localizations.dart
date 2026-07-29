@@ -630,6 +630,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connected to your paired devices'**
   String get notificationText;
+
+  /// No description provided for @notificationConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total} devices connected'**
+  String notificationConnected(int count, int total);
+
+  /// No description provided for @notificationPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync paused'**
+  String get notificationPaused;
+
+  /// No description provided for @notificationPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get notificationPause;
+
+  /// No description provided for @notificationResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get notificationResume;
+
+  /// No description provided for @syncRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync rules'**
+  String get syncRules;
+
+  /// No description provided for @syncRulesFor.
+  ///
+  /// In en, this message translates to:
+  /// **'What this device syncs with “{name}”'**
+  String syncRulesFor(String name);
+
+  /// No description provided for @ruleSendTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to it'**
+  String get ruleSendTo;
+
+  /// No description provided for @ruleSendToExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Push what you copy here to that device.'**
+  String get ruleSendToExplanation;
+
+  /// No description provided for @ruleReceiveFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive from it'**
+  String get ruleReceiveFrom;
+
+  /// No description provided for @ruleReceiveFromExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply what it copies to this clipboard.'**
+  String get ruleReceiveFromExplanation;
+
+  /// No description provided for @ruleKinds.
+  ///
+  /// In en, this message translates to:
+  /// **'Kinds'**
+  String get ruleKinds;
+
+  /// No description provided for @ruleText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get ruleText;
+
+  /// No description provided for @ruleImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get ruleImages;
+
+  /// No description provided for @ruleFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get ruleFiles;
+
+  /// No description provided for @ruleSummaryNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing'**
+  String get ruleSummaryNothing;
+
+  /// No description provided for @ruleSummaryReceiveOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive only'**
+  String get ruleSummaryReceiveOnly;
+
+  /// No description provided for @ruleSummarySendOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Send only'**
+  String get ruleSummarySendOnly;
+
+  /// No description provided for @ruleSummaryCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get ruleSummaryCustom;
+
+  /// No description provided for @transfers.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfers'**
+  String get transfers;
+
+  /// No description provided for @transferSendingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending to {name}'**
+  String transferSendingTo(String name);
+
+  /// No description provided for @transferReceivingFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving from {name}'**
+  String transferReceivingFrom(String name);
+
+  /// No description provided for @transferProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String transferProgress(String done, String total);
+
+  /// No description provided for @transferText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get transferText;
+
+  /// No description provided for @transferImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get transferImage;
 }
 
 class _AppLocalizationsDelegate

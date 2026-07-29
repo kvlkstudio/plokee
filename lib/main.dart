@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -19,7 +20,10 @@ bool get _isDesktop =>
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Configure the Android keep-alive service (no-op elsewhere).
+  // Configure the Android keep-alive service (no-op elsewhere). The port has
+  // to be open before the service starts, or a notification button pressed
+  // early reaches nothing.
+  FlutterForegroundTask.initCommunicationPort();
   await ForegroundService.init();
 
   if (_isDesktop) {

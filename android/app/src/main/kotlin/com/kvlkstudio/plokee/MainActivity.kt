@@ -1,16 +1,43 @@
 package com.kvlkstudio.plokee
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.wifi.WifiManager
+import android.os.Build
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private var multicastLock: WifiManager.MulticastLock? = null
+    private var tileChannel: MethodChannel? = null
+    private var syncReceiver: BroadcastReceiver? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        // The quick settings tile writes the shared preference and broadcasts.
+        // Dart is told immediately so a running app reacts to the tile in the
+        // same moment it is tapped; if the process is gone, the preference it
+        // wrote is read at the next launch instead.
+        val channel = MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "com.kvlkstudio.plokee/tile"
+        )
+        channel.setMethodCallHandler { call, result ->
+            when (call.method) {
+                "isSyncEnabled" -> result.success(SyncPrefs.isEnabled(this))
+                "setSyncEnabled" -> {
+                    SyncPrefs.setEnabled(this, call.arguments as? Boolean ?: true)
+                    result.success(true)
+                }
+                else -> result.notImplemented()
+            }
+        }
+        tileChannel = channel
+        registerSyncReceiver()
 
         // Android drops multicast packets on a dozing Wi-Fi interface unless a
         // MulticastLock is held, which made UDP discovery unreliable even with
@@ -30,6 +57,24 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+    }
+
+    private fun registerSyncReceiver() {
+        if (syncReceiver != null) return
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val enabled = intent?.getBooleanExtra(SyncPrefs.EXTRA_ENABLED, true) ?: return
+                tileChannel?.invokeMethod("syncChanged", enabled)
+            }
+        }
+        val filter = IntentFilter(SyncPrefs.ACTION_SYNC_CHANGED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            registerReceiver(receiver, filter)
+        }
+        syncReceiver = receiver
     }
 
     private fun acquireLock(): Boolean {
@@ -59,6 +104,15 @@ class MainActivity : FlutterActivity() {
 
     override fun onDestroy() {
         releaseLock()
+        syncReceiver?.let {
+            try {
+                unregisterReceiver(it)
+            } catch (_: IllegalArgumentException) {
+                // Already gone with the context.
+            }
+        }
+        syncReceiver = null
+        tileChannel = null
         super.onDestroy()
     }
 }

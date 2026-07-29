@@ -117,5 +117,46 @@
   "notificationChannelName": "Clipboard sync",
   "notificationChannelDescription": "Keeps Plokee connected to your paired devices.",
   "notificationTitle": "Plokee is syncing",
-  "notificationText": "Connected to your paired devices"
+  "notificationText": "Connected to your paired devices",
+  "notificationConnected": "{count} of {total} devices connected",
+  "@notificationConnected": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "notificationPaused": "Sync paused",
+  "notificationPause": "Pause",
+  "notificationResume": "Resume",
+
+  "syncRules": "Sync rules",
+  "syncRulesFor": "What this device syncs with “{name}”",
+  "@syncRulesFor": { "placeholders": { "name": { "type": "String" } } },
+  "ruleSendTo": "Send to it",
+  "ruleSendToExplanation": "Push what you copy here to that device.",
+  "ruleReceiveFrom": "Receive from it",
+  "ruleReceiveFromExplanation": "Apply what it copies to this clipboard.",
+  "ruleKinds": "Kinds",
+  "ruleText": "Text",
+  "ruleImages": "Images",
+  "ruleFiles": "Files",
+  "ruleSummaryNothing": "Nothing",
+  "ruleSummaryReceiveOnly": "Receive only",
+  "ruleSummarySendOnly": "Send only",
+  "ruleSummaryCustom": "Custom",
+
+  "transfers": "Transfers",
+  "transferSendingTo": "Sending to {name}",
+  "@transferSendingTo": { "placeholders": { "name": { "type": "String" } } },
+  "transferReceivingFrom": "Receiving from {name}",
+  "@transferReceivingFrom": { "placeholders": { "name": { "type": "String" } } },
+  "transferProgress": "{done} of {total}",
+  "@transferProgress": {
+    "placeholders": {
+      "done": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "transferText": "Text",
+  "transferImage": "Image"
 }

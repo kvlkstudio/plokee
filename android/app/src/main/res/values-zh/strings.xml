@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_label">Plokee</string>
+    <string name="tile_state_on">剪贴板同步已开启</string>
+    <string name="tile_state_off">剪贴板同步已关闭</string>
+</resources>

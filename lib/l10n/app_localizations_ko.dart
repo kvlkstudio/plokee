@@ -121,32 +121,32 @@ class AppLocalizationsKo extends AppLocalizations {
   String get requestDeclinedOrTimedOut => '요청이 거절되었거나 시간이 초과되었습니다.';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => '기기가 보이지 않나요? IP로 추가';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'IP로 기기 추가';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      '일부 네트워크는 기기끼리 서로 보이지 않게 합니다. 상대 기기의 IP 주소를 입력하면 바로 페어링할 수 있습니다.';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'IP 주소';
 
   @override
-  String get add => 'Add';
+  String get add => '추가';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => '검색 중…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return '이 기기: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return '$address에서 Plokee 기기를 찾을 수 없습니다';
   }
 
   @override
@@ -280,4 +280,86 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get notificationText => '페어링된 기기에 연결됨';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$total대 중 $count대 연결됨';
+  }
+
+  @override
+  String get notificationPaused => '동기화 일시중지됨';
+
+  @override
+  String get notificationPause => '일시중지';
+
+  @override
+  String get notificationResume => '재개';
+
+  @override
+  String get syncRules => '동기화 규칙';
+
+  @override
+  String syncRulesFor(String name) {
+    return '이 기기가 “$name”와(과) 동기화하는 항목';
+  }
+
+  @override
+  String get ruleSendTo => '보내기';
+
+  @override
+  String get ruleSendToExplanation => '여기서 복사한 항목을 그 기기로 보냅니다.';
+
+  @override
+  String get ruleReceiveFrom => '받기';
+
+  @override
+  String get ruleReceiveFromExplanation => '그 기기에서 복사한 항목을 이 클립보드에 적용합니다.';
+
+  @override
+  String get ruleKinds => '종류';
+
+  @override
+  String get ruleText => '텍스트';
+
+  @override
+  String get ruleImages => '이미지';
+
+  @override
+  String get ruleFiles => '파일';
+
+  @override
+  String get ruleSummaryNothing => '없음';
+
+  @override
+  String get ruleSummaryReceiveOnly => '받기만';
+
+  @override
+  String get ruleSummarySendOnly => '보내기만';
+
+  @override
+  String get ruleSummaryCustom => '사용자 지정';
+
+  @override
+  String get transfers => '전송';
+
+  @override
+  String transferSendingTo(String name) {
+    return '$name(으)로 보내는 중';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return '$name에서 받는 중';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$total 중 $done';
+  }
+
+  @override
+  String get transferText => '텍스트';
+
+  @override
+  String get transferImage => '이미지';
 }

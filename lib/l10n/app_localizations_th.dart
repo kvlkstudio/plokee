@@ -123,32 +123,32 @@ class AppLocalizationsTh extends AppLocalizations {
   String get requestDeclinedOrTimedOut => 'คำขอถูกปฏิเสธหรือหมดเวลา';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'ไม่เห็นอุปกรณ์ใช่ไหม เพิ่มด้วย IP';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'เพิ่มอุปกรณ์ด้วย IP';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'บางเครือข่ายซ่อนอุปกรณ์จากกัน ใส่ที่อยู่ IP ของอีกเครื่องเพื่อจับคู่โดยตรง';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'ที่อยู่ IP';
 
   @override
-  String get add => 'Add';
+  String get add => 'เพิ่ม';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'กำลังค้นหา…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'อุปกรณ์นี้: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return 'ไม่พบอุปกรณ์ Plokee ที่ $address';
   }
 
   @override
@@ -285,4 +285,88 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get notificationText => 'เชื่อมต่อกับอุปกรณ์ที่จับคู่ไว้';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return 'เชื่อมต่อแล้ว $count จาก $total เครื่อง';
+  }
+
+  @override
+  String get notificationPaused => 'หยุดการซิงค์ชั่วคราว';
+
+  @override
+  String get notificationPause => 'หยุดชั่วคราว';
+
+  @override
+  String get notificationResume => 'ทำต่อ';
+
+  @override
+  String get syncRules => 'กฎการซิงค์';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'สิ่งที่อุปกรณ์นี้ซิงค์กับ “$name”';
+  }
+
+  @override
+  String get ruleSendTo => 'ส่งไปยังเครื่องนั้น';
+
+  @override
+  String get ruleSendToExplanation =>
+      'ส่งสิ่งที่คุณคัดลอกที่นี่ไปยังอุปกรณ์นั้น';
+
+  @override
+  String get ruleReceiveFrom => 'รับจากเครื่องนั้น';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'นำสิ่งที่คัดลอกที่นั่นมาใส่คลิปบอร์ดนี้';
+
+  @override
+  String get ruleKinds => 'ประเภท';
+
+  @override
+  String get ruleText => 'ข้อความ';
+
+  @override
+  String get ruleImages => 'รูปภาพ';
+
+  @override
+  String get ruleFiles => 'ไฟล์';
+
+  @override
+  String get ruleSummaryNothing => 'ไม่มี';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'รับอย่างเดียว';
+
+  @override
+  String get ruleSummarySendOnly => 'ส่งอย่างเดียว';
+
+  @override
+  String get ruleSummaryCustom => 'กำหนดเอง';
+
+  @override
+  String get transfers => 'การถ่ายโอน';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'กำลังส่งไปยัง $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'กำลังรับจาก $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done จาก $total';
+  }
+
+  @override
+  String get transferText => 'ข้อความ';
+
+  @override
+  String get transferImage => 'รูปภาพ';
 }

@@ -187,6 +187,14 @@ class SettingsStore {
     await _savePeers();
   }
 
+  /// Replaces one paired device's sync rules.
+  Future<void> updatePeerRules(String id, SyncRules rules) async {
+    final peer = peerById(id);
+    if (peer == null) return;
+    peer.rules = rules;
+    await _savePeers();
+  }
+
   Future<void> removePeer(String id) async {
     peers.removeWhere((p) => p.id == id);
     await _savePeers();

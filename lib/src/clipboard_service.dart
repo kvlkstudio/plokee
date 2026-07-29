@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:pasteboard/pasteboard.dart';
 
 import 'models.dart';
+import 'transfer.dart';
 
 /// What was read from the local clipboard.
 class LocalClip {
@@ -37,7 +38,7 @@ class LocalClip {
         ClipKind.image =>
           'i:${Object.hashAll(image!.take(64))}:${image!.length}',
         ClipKind.files =>
-          'f:${files.map((f) => '${f.name}:${f.bytes.length}').join(',')}',
+          'f:${files.map((f) => '${f.name}:${f.size}').join(',')}',
       };
 }
 
@@ -122,31 +123,35 @@ class ClipboardService with ClipboardListener {
   }
 
   /// Priority: files (desktop) > image > text.
+  ///
+  /// Files are recorded by path and size only. Reading their contents here is
+  /// what used to make a large copy impossible: the bytes were pulled into
+  /// memory on every clipboard change, whether or not anything was going to be
+  /// sent. The sync engine now streams them off disk when it needs them.
   Future<LocalClip?> _read() async {
     if (!isMobilePlatform) {
       try {
         final paths = await Pasteboard.files();
         if (paths.isNotEmpty) {
           final files = <ClipFile>[];
-          var total = 0;
+          final livePaths = <String>[];
           for (final path in paths) {
             final file = File(path);
             if (!await file.exists()) continue; // directories are skipped
-            final length = await file.length();
-            total += length;
-            if (length > maxClipBytes || total > maxClipBytes) return null;
-            files.add(ClipFile(
+            livePaths.add(path);
+            files.add(ClipFile.onDisk(
               name: file.uri.pathSegments.last,
-              bytes: await file.readAsBytes(),
+              path: path,
+              size: await file.length(),
             ));
           }
-          if (files.isNotEmpty) return LocalClip.files(files, paths);
+          if (files.isNotEmpty) return LocalClip.files(files, livePaths);
         }
       } catch (_) {}
     }
     try {
       final image = await Pasteboard.image;
-      if (image != null && image.isNotEmpty && image.length <= maxClipBytes) {
+      if (image != null && image.isNotEmpty) {
         return LocalClip.image(image);
       }
     } catch (_) {}
@@ -179,8 +184,15 @@ class ClipboardService with ClipboardListener {
           final saved = <String>[];
           await saveDir.create(recursive: true);
           for (final f in payload.files) {
-            final path = _uniquePath(saveDir, f.name);
-            await File(path).writeAsBytes(f.bytes);
+            // A streamed clip is already on disk — the engine wrote it there as
+            // it arrived. Only the one-frame path still carries bytes.
+            final existing = f.path;
+            if (existing != null) {
+              saved.add(existing);
+              continue;
+            }
+            final path = uniqueFilePath(saveDir, f.name);
+            await File(path).writeAsBytes(f.bytes!);
             saved.add(path);
           }
           var applied = false;
@@ -235,16 +247,4 @@ class ClipboardService with ClipboardListener {
     }
   }
 
-  String _uniquePath(Directory dir, String name) {
-    var candidate = '${dir.path}${Platform.pathSeparator}$name';
-    var i = 1;
-    while (File(candidate).existsSync()) {
-      final dot = name.lastIndexOf('.');
-      final stem = dot > 0 ? name.substring(0, dot) : name;
-      final ext = dot > 0 ? name.substring(dot) : '';
-      candidate = '${dir.path}${Platform.pathSeparator}$stem ($i)$ext';
-      i++;
-    }
-    return candidate;
-  }
 }

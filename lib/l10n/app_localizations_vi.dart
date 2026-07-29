@@ -124,32 +124,32 @@ class AppLocalizationsVi extends AppLocalizations {
   String get requestDeclinedOrTimedOut => 'Yêu cầu đã bị từ chối hoặc hết hạn.';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'Không thấy thiết bị? Thêm bằng IP';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'Thêm thiết bị bằng IP';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'Một số mạng ẩn các thiết bị với nhau. Nhập địa chỉ IP của thiết bị kia để ghép nối trực tiếp.';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'Địa chỉ IP';
 
   @override
-  String get add => 'Add';
+  String get add => 'Thêm';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'Đang tìm…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'Thiết bị này: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return 'Không tìm thấy thiết bị Plokee tại $address';
   }
 
   @override
@@ -287,4 +287,88 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get notificationText => 'Đã kết nối với thiết bị đã ghép nối';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return 'Đã kết nối $count/$total thiết bị';
+  }
+
+  @override
+  String get notificationPaused => 'Đồng bộ tạm dừng';
+
+  @override
+  String get notificationPause => 'Tạm dừng';
+
+  @override
+  String get notificationResume => 'Tiếp tục';
+
+  @override
+  String get syncRules => 'Quy tắc đồng bộ';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'Nội dung thiết bị này đồng bộ với “$name”';
+  }
+
+  @override
+  String get ruleSendTo => 'Gửi tới thiết bị đó';
+
+  @override
+  String get ruleSendToExplanation =>
+      'Gửi những gì bạn sao chép ở đây tới thiết bị đó.';
+
+  @override
+  String get ruleReceiveFrom => 'Nhận từ thiết bị đó';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'Áp dụng những gì được sao chép ở đó vào bảng nhớ tạm này.';
+
+  @override
+  String get ruleKinds => 'Loại';
+
+  @override
+  String get ruleText => 'Văn bản';
+
+  @override
+  String get ruleImages => 'Hình ảnh';
+
+  @override
+  String get ruleFiles => 'Tệp';
+
+  @override
+  String get ruleSummaryNothing => 'Không gì';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'Chỉ nhận';
+
+  @override
+  String get ruleSummarySendOnly => 'Chỉ gửi';
+
+  @override
+  String get ruleSummaryCustom => 'Tùy chỉnh';
+
+  @override
+  String get transfers => 'Truyền tệp';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'Đang gửi tới $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'Đang nhận từ $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done/$total';
+  }
+
+  @override
+  String get transferText => 'Văn bản';
+
+  @override
+  String get transferImage => 'Hình ảnh';
 }

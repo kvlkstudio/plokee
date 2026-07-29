@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -147,8 +148,8 @@ void main() {
   test('files payload round-trips through JSON', () {
     final payload = ClipPayload.files(
       [
-        ClipFile(name: 'a.txt', bytes: Uint8List.fromList([1, 2, 3])),
-        ClipFile(name: 'отчёт.pdf', bytes: Uint8List.fromList([4, 5])),
+        ClipFile.inline(name: 'a.txt', bytes: Uint8List.fromList([1, 2, 3])),
+        ClipFile.inline(name: 'отчёт.pdf', bytes: Uint8List.fromList([4, 5])),
       ],
       ts: 1,
       origin: 'dev1',
@@ -165,5 +166,65 @@ void main() {
     expect(ClipPayload.tryParse({'kind': 'nope'}), isNull);
     expect(ClipPayload.tryParse({'kind': 'image', 'image': '!!bad-b64'}),
         isNull);
+  });
+
+  test('byteSize measures a file clip without opening anything', () {
+    // The point of the check: a 4 GB file must be sizeable without a read, or
+    // deciding how to send it would cost as much as sending it.
+    final payload = ClipPayload.files(
+      [
+        ClipFile.onDisk(
+            name: 'movie.mov', path: '/nowhere/movie.mov', size: 4 << 30),
+        ClipFile.onDisk(
+            name: 'notes.txt', path: '/nowhere/notes.txt', size: 100),
+      ],
+      ts: 1,
+      origin: 'dev1',
+    );
+    expect(payload.byteSize, (4 << 30) + 100);
+    expect(payload.byteSize, greaterThan(inlineClipBytes));
+  });
+
+  test('a file clip signs itself by name and size, not by contents', () {
+    // Echo suppression runs on every clipboard change; hashing gigabytes there
+    // would stall the app.
+    final payload = ClipPayload.files(
+      [ClipFile.onDisk(name: 'a.bin', path: '/nowhere/a.bin', size: 42)],
+      ts: 1,
+      origin: 'dev1',
+    );
+    expect(payload.signature, 'f:a.bin:42');
+  });
+
+  test('short text stays under the inline threshold', () {
+    final payload =
+        ClipPayload.text('короткий текст', ts: 1, origin: 'dev1');
+    expect(payload.byteSize, lessThan(inlineClipBytes));
+  });
+
+  test('materialized loads file contents for the one-frame path', () async {
+    final file = File('${Directory.systemTemp.path}/plokee-materialize.txt');
+    await file.writeAsBytes([1, 2, 3, 4]);
+    addTearDown(() => file.delete());
+
+    final payload = ClipPayload.files(
+      [ClipFile.onDisk(name: 'x.txt', path: file.path, size: 4)],
+      ts: 1,
+      origin: 'dev1',
+    );
+    expect(payload.files.single.bytes, isNull);
+
+    final inline = await payload.materialized();
+    expect(inline.files.single.bytes, equals([1, 2, 3, 4]));
+    // And it is now encodable, which the original was not.
+    expect(ClipPayload.tryParse(inline.toJson())!.files.single.bytes,
+        equals([1, 2, 3, 4]));
+  });
+
+  test('formatByteSize climbs into gigabytes', () {
+    expect(formatByteSize(512), '512 B');
+    expect(formatByteSize(2048), '2 KB');
+    expect(formatByteSize(5 * 1024 * 1024), '5.0 MB');
+    expect(formatByteSize(3 * 1024 * 1024 * 1024), '3.00 GB');
   });
 }

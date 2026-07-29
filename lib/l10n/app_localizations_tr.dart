@@ -125,32 +125,32 @@ class AppLocalizationsTr extends AppLocalizations {
       'İstek reddedildi veya zaman aşımına uğradı.';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'Cihaz görünmüyor mu? IP ile ekle';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'IP ile cihaz ekle';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'Bazı ağlar cihazları birbirinden gizler. Doğrudan eşleştirmek için diğer cihazın IP adresini girin.';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'IP adresi';
 
   @override
-  String get add => 'Add';
+  String get add => 'Ekle';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'Aranıyor…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'Bu cihaz: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return '$address adresinde Plokee cihazı bulunamadı';
   }
 
   @override
@@ -287,4 +287,88 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get notificationText => 'Eşleştirilmiş cihazlarınıza bağlı';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$total cihazdan $count tanesi bağlı';
+  }
+
+  @override
+  String get notificationPaused => 'Eşitleme duraklatıldı';
+
+  @override
+  String get notificationPause => 'Duraklat';
+
+  @override
+  String get notificationResume => 'Sürdür';
+
+  @override
+  String get syncRules => 'Eşitleme kuralları';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'Bu cihazın “$name” ile eşitledikleri';
+  }
+
+  @override
+  String get ruleSendTo => 'Ona gönder';
+
+  @override
+  String get ruleSendToExplanation =>
+      'Burada kopyaladıklarını o cihaza gönder.';
+
+  @override
+  String get ruleReceiveFrom => 'Ondan al';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'Orada kopyalananları bu panoya uygula.';
+
+  @override
+  String get ruleKinds => 'Türler';
+
+  @override
+  String get ruleText => 'Metin';
+
+  @override
+  String get ruleImages => 'Görseller';
+
+  @override
+  String get ruleFiles => 'Dosyalar';
+
+  @override
+  String get ruleSummaryNothing => 'Hiçbiri';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'Yalnızca alma';
+
+  @override
+  String get ruleSummarySendOnly => 'Yalnızca gönderme';
+
+  @override
+  String get ruleSummaryCustom => 'Özel';
+
+  @override
+  String get transfers => 'Aktarımlar';
+
+  @override
+  String transferSendingTo(String name) {
+    return '$name cihazına gönderiliyor';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return '$name cihazından alınıyor';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done / $total';
+  }
+
+  @override
+  String get transferText => 'Metin';
+
+  @override
+  String get transferImage => 'Görsel';
 }

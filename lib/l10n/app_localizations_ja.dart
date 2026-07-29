@@ -121,32 +121,32 @@ class AppLocalizationsJa extends AppLocalizations {
   String get requestDeclinedOrTimedOut => '要求が拒否されたか、タイムアウトしました。';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'デバイスが表示されない？ IP で追加';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'IP でデバイスを追加';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'ネットワークによってはデバイス同士が見えないことがあります。相手のデバイスの IP アドレスを入力すると直接ペアリングできます。';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'IP アドレス';
 
   @override
-  String get add => 'Add';
+  String get add => '追加';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => '検索中…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'このデバイス: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return '$address に Plokee デバイスが見つかりません';
   }
 
   @override
@@ -279,4 +279,86 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get notificationText => 'ペアリング済みのデバイスに接続中';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$total 台中 $count 台に接続中';
+  }
+
+  @override
+  String get notificationPaused => '同期を一時停止中';
+
+  @override
+  String get notificationPause => '一時停止';
+
+  @override
+  String get notificationResume => '再開';
+
+  @override
+  String get syncRules => '同期ルール';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'このデバイスが「$name」と同期する内容';
+  }
+
+  @override
+  String get ruleSendTo => '送信する';
+
+  @override
+  String get ruleSendToExplanation => 'ここでコピーしたものをそのデバイスに送ります。';
+
+  @override
+  String get ruleReceiveFrom => '受信する';
+
+  @override
+  String get ruleReceiveFromExplanation => 'そのデバイスでコピーされたものをこのクリップボードに反映します。';
+
+  @override
+  String get ruleKinds => '種類';
+
+  @override
+  String get ruleText => 'テキスト';
+
+  @override
+  String get ruleImages => '画像';
+
+  @override
+  String get ruleFiles => 'ファイル';
+
+  @override
+  String get ruleSummaryNothing => 'なし';
+
+  @override
+  String get ruleSummaryReceiveOnly => '受信のみ';
+
+  @override
+  String get ruleSummarySendOnly => '送信のみ';
+
+  @override
+  String get ruleSummaryCustom => 'カスタム';
+
+  @override
+  String get transfers => '転送';
+
+  @override
+  String transferSendingTo(String name) {
+    return '$name へ送信中';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return '$name から受信中';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$total 中 $done';
+  }
+
+  @override
+  String get transferText => 'テキスト';
+
+  @override
+  String get transferImage => '画像';
 }

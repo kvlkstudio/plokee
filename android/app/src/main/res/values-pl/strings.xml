@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_label">Plokee</string>
+    <string name="tile_state_on">Synchronizacja schowka włączona</string>
+    <string name="tile_state_off">Synchronizacja schowka wyłączona</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_label">Plokee</string>
+    <string name="tile_state_on">Đồng bộ bảng nhớ tạm đang bật</string>
+    <string name="tile_state_off">Đồng bộ bảng nhớ tạm đang tắt</string>
+</resources>

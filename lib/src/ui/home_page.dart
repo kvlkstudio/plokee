@@ -9,6 +9,7 @@ import '../app_state.dart';
 import '../file_actions.dart';
 import '../localization.dart';
 import '../models.dart';
+import '../transfer.dart';
 import 'design.dart';
 
 class HomePage extends StatefulWidget {
@@ -371,13 +372,92 @@ class _HomePageState extends State<HomePage> {
       title: peer.name.toUpperCase(),
       actions: [
         AppSheetAction(
+            value: 'rules', label: l10n.syncRules, icon: Icons.rule_rounded),
+        AppSheetAction(
             value: 'unpair',
             label: l10n.unpair,
             icon: Icons.link_off,
             danger: true),
       ],
     );
-    if (action == 'unpair') await state.unpair(peer.id);
+    switch (action) {
+      case 'rules':
+        await _editSyncRules(peer);
+      case 'unpair':
+        await state.unpair(peer.id);
+    }
+  }
+
+  /// Per-device rules: direction and which kinds of clip may cross.
+  ///
+  /// Edits apply as they are made rather than on a Save button — every switch
+  /// is independent and reversible, and the peer list behind the sheet updates
+  /// with them.
+  Future<void> _editSyncRules(Peer peer) async {
+    if (!mounted) return;
+    await showAppDialog<void>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setLocal) {
+          final l10n = AppLocalizations.of(dialogContext);
+          final rules = peer.rules;
+          void update(SyncRules next) {
+            setLocal(() => peer.rules = next);
+            state.setPeerRules(peer.id, next);
+          }
+
+          return AppDialogLayout(
+            title: l10n.syncRules,
+            body: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.syncRulesFor(peer.name),
+                    style:
+                        TextStyle(color: dialogContext.palette.textSecondary)),
+                const SizedBox(height: AppSpace.sm),
+                _SettingRow(
+                  label: l10n.ruleSendTo,
+                  description: l10n.ruleSendToExplanation,
+                  trailing: AppToggle(
+                    value: rules.send,
+                    onChanged: (v) => update(rules.copyWith(send: v)),
+                  ),
+                ),
+                _SettingRow(
+                  label: l10n.ruleReceiveFrom,
+                  description: l10n.ruleReceiveFromExplanation,
+                  trailing: AppToggle(
+                    value: rules.receive,
+                    onChanged: (v) => update(rules.copyWith(receive: v)),
+                  ),
+                ),
+                const SizedBox(height: AppSpace.sm),
+                _SectionLabel(l10n.ruleKinds),
+                for (final kind in ClipKind.values)
+                  _SettingRow(
+                    label: switch (kind) {
+                      ClipKind.text => l10n.ruleText,
+                      ClipKind.image => l10n.ruleImages,
+                      ClipKind.files => l10n.ruleFiles,
+                    },
+                    trailing: AppToggle(
+                      value: rules.kinds.contains(kind),
+                      onChanged: (v) => update(rules.withKind(kind, v)),
+                    ),
+                  ),
+              ],
+            ),
+            actions: [
+              AppButton(
+                label: l10n.done,
+                onPressed: () => Navigator.of(dialogContext).pop(),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   // ---- Actions ----
@@ -495,6 +575,20 @@ class _HomePageState extends State<HomePage> {
     showAppToast(context, AppLocalizations.of(context).couldNotOpenFolder);
   }
 
+  /// Short badge for a peer whose rules are no longer the defaults. Null when
+  /// they are, so an untouched pairing shows nothing at all.
+  String? _rulesSummary(AppLocalizations l10n, SyncRules rules) {
+    if (rules.isDefault) return null;
+    if (rules.kinds.isEmpty || (!rules.send && !rules.receive)) {
+      return l10n.ruleSummaryNothing;
+    }
+    if (rules.kinds.length == ClipKind.values.length) {
+      if (rules.send && !rules.receive) return l10n.ruleSummarySendOnly;
+      if (!rules.send && rules.receive) return l10n.ruleSummaryReceiveOnly;
+    }
+    return l10n.ruleSummaryCustom;
+  }
+
   IconData _platformIcon(String platform) => switch (platform) {
         'macos' => Icons.laptop_mac,
         'windows' => Icons.desktop_windows_outlined,
@@ -552,6 +646,7 @@ class _HomePageState extends State<HomePage> {
   Widget _content(BuildContext context) {
     final peers = state.visiblePeers;
     final foundDevices = state.unpairedFound;
+    final transfers = state.activeTransfers;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
@@ -568,6 +663,16 @@ class _HomePageState extends State<HomePage> {
             onPressed: _addByIp,
           ),
         ),
+        if (transfers.isNotEmpty) ...[
+          const SizedBox(height: AppSpace.lg),
+          _SectionLabel(AppLocalizations.of(context).transfers),
+          const SizedBox(height: AppSpace.sm),
+          for (final transfer in transfers)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpace.sm),
+              child: _TransferRow(transfer: transfer),
+            ),
+        ],
         const SizedBox(height: AppSpace.lg),
         Row(
           children: [
@@ -648,6 +753,7 @@ class _HomePageState extends State<HomePage> {
         connected: state.engine.isConnected(peer.id),
         online: state.isPeerOnline(peer.id),
         icon: _platformIcon(peer.platform),
+        rulesLabel: _rulesSummary(AppLocalizations.of(context), peer.rules),
         onActions: () => _peerActions(peer),
       ));
     }
@@ -782,6 +888,7 @@ class _PeerRow extends StatelessWidget {
   final bool connected;
   final bool online;
   final IconData icon;
+  final String? rulesLabel;
   final VoidCallback onActions;
 
   const _PeerRow({
@@ -789,6 +896,7 @@ class _PeerRow extends StatelessWidget {
     required this.connected,
     required this.online,
     required this.icon,
+    required this.rulesLabel,
     required this.onActions,
   });
 
@@ -828,6 +936,20 @@ class _PeerRow extends StatelessWidget {
                     Text(status,
                         style: TextStyle(
                             fontSize: 12.5, fontWeight: FontWeight.w500, color: statusColor)),
+                    if (rulesLabel != null) ...[
+                      const SizedBox(width: 6),
+                      Icon(Icons.rule_rounded, size: 11, color: p.textTertiary),
+                      const SizedBox(width: 3),
+                      Flexible(
+                        child: Text(rulesLabel!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w500,
+                                color: p.textTertiary)),
+                      ),
+                    ],
                   ],
                 ),
               ],
@@ -880,6 +1002,82 @@ class _FoundRow extends StatelessWidget {
             variant: AppButtonVariant.tonal,
             onPressed: onPair,
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One transfer in flight.
+///
+/// Sending a multi-gigabyte file is now an ordinary thing to do, and without
+/// this the app looks idle for minutes while it happens.
+class _TransferRow extends StatelessWidget {
+  final TransferProgress transfer;
+
+  const _TransferRow({required this.transfer});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final l10n = AppLocalizations.of(context);
+    final title = switch (transfer.kind) {
+      ClipKind.text => l10n.transferText,
+      ClipKind.image => l10n.transferImage,
+      ClipKind.files => transfer.label,
+    };
+    return AppCard(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 11),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                  transfer.incoming
+                      ? Icons.south_west_rounded
+                      : Icons.north_east_rounded,
+                  size: 13,
+                  color: p.accent),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w600,
+                        color: p.textPrimary)),
+              ),
+              const SizedBox(width: AppSpace.sm),
+              Text(
+                  l10n.transferProgress(formatByteSize(transfer.done),
+                      formatByteSize(transfer.total)),
+                  style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w500,
+                      color: p.textTertiary)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppSpace.radiusPill),
+            child: LinearProgressIndicator(
+              value: transfer.fraction,
+              minHeight: 4,
+              backgroundColor: p.surfaceAlt,
+              valueColor: AlwaysStoppedAnimation(p.accent),
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+              transfer.incoming
+                  ? l10n.transferReceivingFrom(transfer.peerName)
+                  : l10n.transferSendingTo(transfer.peerName),
+              style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w500,
+                  color: p.textTertiary)),
         ],
       ),
     );

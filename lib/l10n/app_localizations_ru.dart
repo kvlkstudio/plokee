@@ -286,4 +286,88 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get notificationText => 'На связи со связанными устройствами';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return 'На связи $count из $total устройств';
+  }
+
+  @override
+  String get notificationPaused => 'Синхронизация на паузе';
+
+  @override
+  String get notificationPause => 'Пауза';
+
+  @override
+  String get notificationResume => 'Продолжить';
+
+  @override
+  String get syncRules => 'Правила синхронизации';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'Что это устройство синхронизирует с «$name»';
+  }
+
+  @override
+  String get ruleSendTo => 'Отправлять ему';
+
+  @override
+  String get ruleSendToExplanation =>
+      'Передавать скопированное здесь на это устройство.';
+
+  @override
+  String get ruleReceiveFrom => 'Получать от него';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'Применять скопированное там к этому буферу обмена.';
+
+  @override
+  String get ruleKinds => 'Типы';
+
+  @override
+  String get ruleText => 'Текст';
+
+  @override
+  String get ruleImages => 'Изображения';
+
+  @override
+  String get ruleFiles => 'Файлы';
+
+  @override
+  String get ruleSummaryNothing => 'Ничего';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'Только приём';
+
+  @override
+  String get ruleSummarySendOnly => 'Только отправка';
+
+  @override
+  String get ruleSummaryCustom => 'Свои правила';
+
+  @override
+  String get transfers => 'Передачи';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'Отправка на $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'Приём от $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done из $total';
+  }
+
+  @override
+  String get transferText => 'Текст';
+
+  @override
+  String get transferImage => 'Изображение';
 }

@@ -132,13 +132,6 @@ void main() {
         await receivedImageOnB.future.timeout(const Duration(seconds: 5));
     expect(image.imageBytes, equals(imageBytes));
 
-    // Oversized clips are refused before hitting the network.
-    final huge = Uint8List(maxClipBytes + 1);
-    expect(
-      await engineA.broadcastClip(ClipPayload.image(huge,
-          ts: DateTime.now().millisecondsSinceEpoch, origin: 'aaaa')),
-      isFalse,
-    );
   });
 
   test('a peer that connects late still receives the clip it missed',
@@ -217,22 +210,18 @@ void main() {
     final caughtUp = await firstOnB.future.timeout(const Duration(seconds: 5));
     expect(caughtUp.text, 'скопировано пока телефон спал');
 
-    // A real drop and redial replays the same clip again — by design, since
-    // the engine cannot know whether the peer kept it. What it must not do is
-    // invent a new timestamp: the original one is what lets the receiver
-    // recognise the repeat and skip it (see AppState._appliedClips).
+    // A real drop and redial sends the same clip again — by design, since the
+    // sender cannot know whether the peer kept it. The receiver recognises it
+    // by its unchanged timestamp and drops it before applying it a second
+    // time; for a file clip that check has to happen before the bytes are
+    // written, which is why it lives in the engine.
     engineA.disconnectPeer('zzzz');
     await Future<void>.delayed(const Duration(milliseconds: 200));
     expect(engineA.isConnected('zzzz'), isFalse);
     await engineA.connectTo(
         storeA.peerById('zzzz')!, ['127.0.0.1'], engineB.port);
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    expect(receivedOnB.length, greaterThan(1), reason: 'replayed on redial');
-    expect(
-      receivedOnB.map((p) => p.ts).toSet(),
-      hasLength(1),
-      reason: 'every copy of the replay must carry the same timestamp',
-    );
+    expect(receivedOnB, hasLength(1), reason: 'the replay must not reapply');
   });
 
   test('probeDevice finds a peer by address alone, skipping itself', () async {

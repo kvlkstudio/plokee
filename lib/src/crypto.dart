@@ -68,32 +68,53 @@ class CryptoService {
     return (n % 1000000).toString().padLeft(6, '0');
   }
 
+  /// Derived message keys, kept per pairing secret.
+  ///
+  /// A streamed file is encrypted one chunk at a time, so this runs thousands
+  /// of times per transfer; re-deriving through HKDF each time is pure waste.
+  /// The map is keyed by the secret itself and therefore bounded by the number
+  /// of paired devices.
+  static final Map<String, SecretKey> _messageKeys = {};
+
   static Future<SecretKey> _messageKey(Uint8List secret) async {
+    final cacheKey = base64Encode(secret);
+    final cached = _messageKeys[cacheKey];
+    if (cached != null) return cached;
     final hkdf = Hkdf(hmac: _hmac, outputLength: 32);
-    return hkdf.deriveKey(
+    final key = await hkdf.deriveKey(
       secretKey: SecretKey(secret),
       info: utf8.encode('plokee-msg-v1'),
     );
+    _messageKeys[cacheKey] = key;
+    return key;
   }
 
-  /// Encrypts a payload for a paired device. Returns base64(nonce|ct|mac).
-  static Future<String> encrypt(Uint8List secret, String plaintext) async {
+  /// Encrypts bytes for a paired device. Returns nonce|ct|mac.
+  static Future<Uint8List> encryptBytes(
+      Uint8List secret, List<int> clear) async {
     final key = await _messageKey(secret);
-    final box = await _aes.encrypt(utf8.encode(plaintext), secretKey: key);
-    return base64Encode(box.concatenation());
+    final box = await _aes.encrypt(clear, secretKey: key);
+    return Uint8List.fromList(box.concatenation());
   }
 
-  /// Decrypts base64(nonce|ct|mac); throws on tampering.
-  static Future<String> decrypt(Uint8List secret, String data) async {
+  /// Decrypts nonce|ct|mac; throws on tampering.
+  static Future<Uint8List> decryptBytes(Uint8List secret, Uint8List box) async {
     final key = await _messageKey(secret);
-    final box = SecretBox.fromConcatenation(
-      base64Decode(data),
+    final secretBox = SecretBox.fromConcatenation(
+      box,
       nonceLength: 12,
       macLength: 16,
     );
-    final clear = await _aes.decrypt(box, secretKey: key);
-    return utf8.decode(clear);
+    return Uint8List.fromList(await _aes.decrypt(secretBox, secretKey: key));
   }
+
+  /// Encrypts a payload for a paired device. Returns base64(nonce|ct|mac).
+  static Future<String> encrypt(Uint8List secret, String plaintext) async =>
+      base64Encode(await encryptBytes(secret, utf8.encode(plaintext)));
+
+  /// Decrypts base64(nonce|ct|mac); throws on tampering.
+  static Future<String> decrypt(Uint8List secret, String data) async =>
+      utf8.decode(await decryptBytes(secret, base64Decode(data)));
 
   /// HMAC proof for the WebSocket handshake: mac(secret, nonce|deviceId).
   static Future<String> handshakeMac(

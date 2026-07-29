@@ -1,13 +1,29 @@
 import 'dart:convert';
-import 'dart:io' show Platform;
+import 'dart:io';
 import 'dart:typed_data';
 
 /// Protocol version. Bump on breaking changes.
 const int protocolVersion = 1;
 const String appId = 'plokee';
 
-/// Clips larger than this (payload JSON size) are not sent over the network.
-const int maxClipBytes = 32 * 1024 * 1024;
+/// Clips at or below this size travel as a single JSON frame.
+///
+/// Anything bigger is streamed chunk by chunk instead (see `transfer.dart`),
+/// which is what lets a file of any size sync without ever being held in
+/// memory whole. Small clips — which is nearly all text — keep the cheaper
+/// one-frame path.
+const int inlineClipBytes = 256 * 1024;
+
+/// Ceiling for the one-frame path when talking to a peer too old to stream.
+///
+/// Such a peer buffers the whole base64 payload in memory, so this stays at
+/// the limit that shipped with it; larger clips are simply not sent to that
+/// device. Peers that advertise [capStream] have no size limit at all.
+const int legacyMaxClipBytes = 32 * 1024 * 1024;
+
+/// Capability advertised in the WebSocket handshake by peers that understand
+/// chunked transfers.
+const String capStream = 'stream1';
 
 /// How long a clip stays worth replaying to a peer that connects late.
 ///
@@ -18,6 +34,17 @@ const int maxClipBytes = 32 * 1024 * 1024;
 /// user copied on the phone itself, long after the fact, would be worse than
 /// missing the sync.
 const Duration clipReplayWindow = Duration(hours: 1);
+
+/// Compact size label. Gigabytes are a routine sight now that transfers are
+/// unbounded, so the ladder goes all the way up.
+String formatByteSize(int bytes) {
+  if (bytes < 1024) return '$bytes B';
+  if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(0)} KB';
+  if (bytes < 1024 * 1024 * 1024) {
+    return '${(bytes / 1024 / 1024).toStringAsFixed(1)} MB';
+  }
+  return '${(bytes / 1024 / 1024 / 1024).toStringAsFixed(2)} GB';
+}
 
 String currentPlatformName() {
   if (Platform.isMacOS) return 'macos';
@@ -82,12 +109,75 @@ class FoundDevice {
   bool get isStale => DateTime.now().difference(lastSeen).inSeconds > 15;
 }
 
+/// What one paired device is allowed to exchange with this one.
+///
+/// The global sync switch is all-or-nothing, which is the wrong shape once a
+/// laptop is paired with both a work phone and a home desktop: files should go
+/// to one and not the other, and a device can be worth receiving from without
+/// being worth sending to. Rules are per pairing and local — each side decides
+/// for itself what it sends and what it accepts, and neither can widen the
+/// other's.
+class SyncRules {
+  final bool send;
+  final bool receive;
+  final Set<ClipKind> kinds;
+
+  const SyncRules({
+    this.send = true,
+    this.receive = true,
+    this.kinds = const {ClipKind.text, ClipKind.image, ClipKind.files},
+  });
+
+  static const SyncRules defaults = SyncRules();
+
+  bool get isDefault =>
+      send && receive && kinds.length == ClipKind.values.length;
+
+  bool allowsSend(ClipKind kind) => send && kinds.contains(kind);
+  bool allowsReceive(ClipKind kind) => receive && kinds.contains(kind);
+
+  SyncRules copyWith({bool? send, bool? receive, Set<ClipKind>? kinds}) =>
+      SyncRules(
+        send: send ?? this.send,
+        receive: receive ?? this.receive,
+        kinds: kinds ?? this.kinds,
+      );
+
+  SyncRules withKind(ClipKind kind, bool allowed) {
+    final next = {...kinds};
+    if (allowed) {
+      next.add(kind);
+    } else {
+      next.remove(kind);
+    }
+    return copyWith(kinds: next);
+  }
+
+  Map<String, dynamic> toJson() => {
+        'send': send,
+        'receive': receive,
+        'kinds': [for (final k in kinds) k.name],
+      };
+
+  factory SyncRules.fromJson(Map<String, dynamic> json) => SyncRules(
+        send: json['send'] as bool? ?? true,
+        receive: json['receive'] as bool? ?? true,
+        kinds: {
+          for (final name in (json['kinds'] as List<dynamic>? ?? const []))
+            ...ClipKind.values.where((k) => k.name == name),
+        },
+      );
+}
+
 /// A paired (trusted) device persisted between launches.
 class Peer {
   final String id;
   String name;
   final String platform;
   final String secret; // base64, HKDF-derived pairing secret
+
+  /// What this device syncs with that one. See [SyncRules].
+  SyncRules rules;
 
   /// Where this peer was last reached. Lets a reconnect be attempted straight
   /// away instead of waiting for discovery — which matters on iOS, where
@@ -103,6 +193,7 @@ class Peer {
     required this.secret,
     this.lastAddress,
     this.lastPort,
+    this.rules = SyncRules.defaults,
   });
 
   Map<String, dynamic> toJson() => {
@@ -112,6 +203,7 @@ class Peer {
         'secret': secret,
         if (lastAddress != null) 'addr': lastAddress,
         if (lastPort != null) 'port': lastPort,
+        if (!rules.isDefault) 'rules': rules.toJson(),
       };
 
   factory Peer.fromJson(Map<String, dynamic> json) => Peer(
@@ -121,6 +213,9 @@ class Peer {
         secret: json['secret'] as String,
         lastAddress: json['addr'] as String?,
         lastPort: json['port'] as int?,
+        rules: json['rules'] is Map<String, dynamic>
+            ? SyncRules.fromJson(json['rules'] as Map<String, dynamic>)
+            : SyncRules.defaults,
       );
 }
 
@@ -129,16 +224,40 @@ class Peer {
 enum ClipKind { text, image, files }
 
 /// One file inside a `files` clip.
+///
+/// A file is normally referenced by [path] and read straight off disk when it
+/// is sent, so a 4 GB video costs a 64 KB buffer rather than 4 GB of heap.
+/// [bytes] is only populated for content that never had a file behind it (the
+/// legacy one-frame path, and images taken from the pasteboard).
 class ClipFile {
   final String name;
-  final Uint8List bytes;
+  final int size;
+  final String? path;
+  final Uint8List? bytes;
 
-  ClipFile({required this.name, required this.bytes});
+  ClipFile.inline({required this.name, required Uint8List this.bytes})
+      : size = bytes.length,
+        path = null;
+
+  ClipFile.onDisk({
+    required this.name,
+    required String this.path,
+    required this.size,
+  }) : bytes = null;
+
+  /// Reads the contents in chunks, from memory or from disk.
+  Stream<List<int>> openRead() =>
+      bytes != null ? Stream.value(bytes!) : File(path!).openRead();
+
+  /// Whole contents in memory. Only call this for content known to be small —
+  /// the whole point of [path] is not having to.
+  Future<Uint8List> readAll() async =>
+      bytes ?? await File(path!).readAsBytes();
 
   Map<String, dynamic> toJson() =>
-      {'name': name, 'data': base64Encode(bytes)};
+      {'name': name, 'data': base64Encode(bytes!)};
 
-  factory ClipFile.fromJson(Map<String, dynamic> json) => ClipFile(
+  factory ClipFile.fromJson(Map<String, dynamic> json) => ClipFile.inline(
         name: json['name'] as String,
         bytes: base64Decode(json['data'] as String),
       );
@@ -216,8 +335,46 @@ class ClipPayload {
         ClipKind.text => 't:${text.hashCode}:${text!.length}',
         ClipKind.image =>
           'i:${Object.hashAll(imageBytes!.take(64))}:${imageBytes!.length}',
-        ClipKind.files => 'f:${files.map((f) => '${f.name}:${f.bytes.length}').join(',')}',
+        ClipKind.files =>
+          'f:${files.map((f) => '${f.name}:${f.size}').join(',')}',
       };
+
+  /// Payload size in bytes, without materialising anything.
+  ///
+  /// Decides between the one-frame and the streamed path, so it must not
+  /// itself read a file: for [ClipKind.files] the sizes come from the
+  /// directory entry.
+  int get byteSize => switch (kind) {
+        // Encoding a plausible clipboard string to measure it is cheap; past
+        // that an upper bound is enough, and utf8.encode on a huge one would
+        // allocate exactly what the streamed path exists to avoid.
+        ClipKind.text => text!.length <= inlineClipBytes
+            ? utf8.encode(text!).length
+            : text!.length * 4,
+        ClipKind.image => imageBytes!.length,
+        ClipKind.files => files.fold(0, (sum, f) => sum + f.size),
+      };
+
+  /// A copy whose file contents are in memory, so [toJson] can encode them.
+  ///
+  /// Only used on the one-frame path, which is bounded by
+  /// [legacyMaxClipBytes]; the streamed path never needs this.
+  Future<ClipPayload> materialized() async {
+    if (kind != ClipKind.files) return this;
+    return ClipPayload._(
+      kind: kind,
+      text: text,
+      imageBytes: imageBytes,
+      files: [
+        for (final f in files)
+          f.bytes != null
+              ? f
+              : ClipFile.inline(name: f.name, bytes: await f.readAll()),
+      ],
+      ts: ts,
+      origin: origin,
+    );
+  }
 }
 
 /// One clipboard entry in local history.
@@ -265,7 +422,7 @@ class ClipItem {
         final t = (text ?? '').replaceAll(RegExp(r'\s+'), ' ').trim();
         return t.length > 200 ? '${t.substring(0, 200)}…' : t;
       case ClipKind.image:
-        return 'Image (${_formatSize(imageSize)})';
+        return 'Image (${formatByteSize(imageSize)})';
       case ClipKind.files:
         return fileNames.join(', ');
     }
@@ -305,13 +462,7 @@ class ClipItem {
   }
 
   /// Human-readable image size, so the UI can build a localized label.
-  String get formattedImageSize => _formatSize(imageSize);
-
-  static String _formatSize(int bytes) {
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(0)} KB';
-    return '${(bytes / 1024 / 1024).toStringAsFixed(1)} MB';
-  }
+  String get formattedImageSize => formatByteSize(imageSize);
 
   /// Serializes metadata for persistence. Image bytes are stored separately
   /// on disk (see [imagePath]); only the path is written here.

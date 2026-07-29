@@ -121,32 +121,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get requestDeclinedOrTimedOut => '请求被拒绝或已超时。';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => '找不到设备？通过 IP 添加';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => '通过 IP 添加设备';
 
   @override
-  String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+  String get addByIpExplanation => '某些网络会让设备之间互相不可见。输入另一台设备的 IP 地址即可直接配对。';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'IP 地址';
 
   @override
-  String get add => 'Add';
+  String get add => '添加';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => '正在搜索…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return '本设备：$address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return '在 $address 未找到 Plokee 设备';
   }
 
   @override
@@ -277,6 +276,88 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get notificationText => '已连接到你配对的设备';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '已连接 $total 台设备中的 $count 台';
+  }
+
+  @override
+  String get notificationPaused => '同步已暂停';
+
+  @override
+  String get notificationPause => '暂停';
+
+  @override
+  String get notificationResume => '继续';
+
+  @override
+  String get syncRules => '同步规则';
+
+  @override
+  String syncRulesFor(String name) {
+    return '本设备与“$name”同步的内容';
+  }
+
+  @override
+  String get ruleSendTo => '向其发送';
+
+  @override
+  String get ruleSendToExplanation => '把在这里复制的内容发送到该设备。';
+
+  @override
+  String get ruleReceiveFrom => '从其接收';
+
+  @override
+  String get ruleReceiveFromExplanation => '把在该设备复制的内容应用到此剪贴板。';
+
+  @override
+  String get ruleKinds => '类型';
+
+  @override
+  String get ruleText => '文本';
+
+  @override
+  String get ruleImages => '图片';
+
+  @override
+  String get ruleFiles => '文件';
+
+  @override
+  String get ruleSummaryNothing => '全部关闭';
+
+  @override
+  String get ruleSummaryReceiveOnly => '仅接收';
+
+  @override
+  String get ruleSummarySendOnly => '仅发送';
+
+  @override
+  String get ruleSummaryCustom => '自定义';
+
+  @override
+  String get transfers => '传输';
+
+  @override
+  String transferSendingTo(String name) {
+    return '正在发送到 $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return '正在接收来自 $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done / $total';
+  }
+
+  @override
+  String get transferText => '文本';
+
+  @override
+  String get transferImage => '图片';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -394,6 +475,34 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get requestDeclinedOrTimedOut => '要求已被拒絕或逾時。';
+
+  @override
+  String get addByIp => '找不到裝置？透過 IP 新增';
+
+  @override
+  String get addByIpTitle => '透過 IP 新增裝置';
+
+  @override
+  String get addByIpExplanation => '某些網路會讓裝置之間互相看不見。輸入另一台裝置的 IP 位址即可直接配對。';
+
+  @override
+  String get ipAddress => 'IP 位址';
+
+  @override
+  String get add => '新增';
+
+  @override
+  String get searching => '正在搜尋…';
+
+  @override
+  String thisDeviceAddress(String address) {
+    return '本裝置：$address';
+  }
+
+  @override
+  String noDeviceAtIp(String address) {
+    return '在 $address 找不到 Plokee 裝置';
+  }
 
   @override
   String get nothingCopiedYet => '尚未複製任何內容';
@@ -523,4 +632,86 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get notificationText => '已連線至你配對的裝置';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '已連線 $total 台裝置中的 $count 台';
+  }
+
+  @override
+  String get notificationPaused => '同步已暫停';
+
+  @override
+  String get notificationPause => '暫停';
+
+  @override
+  String get notificationResume => '繼續';
+
+  @override
+  String get syncRules => '同步規則';
+
+  @override
+  String syncRulesFor(String name) {
+    return '本裝置與「$name」同步的內容';
+  }
+
+  @override
+  String get ruleSendTo => '向其傳送';
+
+  @override
+  String get ruleSendToExplanation => '把在這裡複製的內容傳送到該裝置。';
+
+  @override
+  String get ruleReceiveFrom => '從其接收';
+
+  @override
+  String get ruleReceiveFromExplanation => '把在該裝置複製的內容套用到此剪貼簿。';
+
+  @override
+  String get ruleKinds => '類型';
+
+  @override
+  String get ruleText => '文字';
+
+  @override
+  String get ruleImages => '圖片';
+
+  @override
+  String get ruleFiles => '檔案';
+
+  @override
+  String get ruleSummaryNothing => '全部關閉';
+
+  @override
+  String get ruleSummaryReceiveOnly => '僅接收';
+
+  @override
+  String get ruleSummarySendOnly => '僅傳送';
+
+  @override
+  String get ruleSummaryCustom => '自訂';
+
+  @override
+  String get transfers => '傳輸';
+
+  @override
+  String transferSendingTo(String name) {
+    return '正在傳送至 $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return '正在接收來自 $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done / $total';
+  }
+
+  @override
+  String get transferText => '文字';
+
+  @override
+  String get transferImage => '圖片';
 }

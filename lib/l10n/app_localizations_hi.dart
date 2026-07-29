@@ -125,32 +125,32 @@ class AppLocalizationsHi extends AppLocalizations {
       'अनुरोध अस्वीकार कर दिया गया या समय समाप्त हो गया।';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'डिवाइस नहीं दिख रहा? IP से जोड़ें';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'IP से डिवाइस जोड़ें';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'कुछ नेटवर्क डिवाइस को एक-दूसरे से छिपाते हैं। सीधे पेयर करने के लिए दूसरे डिवाइस का IP पता दर्ज करें।';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'IP पता';
 
   @override
-  String get add => 'Add';
+  String get add => 'जोड़ें';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'खोज रहे हैं…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'यह डिवाइस: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return '$address पर कोई Plokee डिवाइस नहीं मिला';
   }
 
   @override
@@ -287,4 +287,88 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get notificationText => 'आपके पेयर किए गए डिवाइस से कनेक्टेड';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$total में से $count डिवाइस कनेक्टेड';
+  }
+
+  @override
+  String get notificationPaused => 'सिंक रोका गया';
+
+  @override
+  String get notificationPause => 'रोकें';
+
+  @override
+  String get notificationResume => 'जारी रखें';
+
+  @override
+  String get syncRules => 'सिंक नियम';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'यह डिवाइस “$name” के साथ क्या सिंक करता है';
+  }
+
+  @override
+  String get ruleSendTo => 'इसे भेजें';
+
+  @override
+  String get ruleSendToExplanation =>
+      'यहाँ कॉपी की गई चीज़ें उस डिवाइस पर भेजें।';
+
+  @override
+  String get ruleReceiveFrom => 'इससे प्राप्त करें';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'वहाँ कॉपी की गई चीज़ें इस क्लिपबोर्ड पर लागू करें।';
+
+  @override
+  String get ruleKinds => 'प्रकार';
+
+  @override
+  String get ruleText => 'टेक्स्ट';
+
+  @override
+  String get ruleImages => 'छवियाँ';
+
+  @override
+  String get ruleFiles => 'फ़ाइलें';
+
+  @override
+  String get ruleSummaryNothing => 'कुछ नहीं';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'केवल प्राप्त करें';
+
+  @override
+  String get ruleSummarySendOnly => 'केवल भेजें';
+
+  @override
+  String get ruleSummaryCustom => 'कस्टम';
+
+  @override
+  String get transfers => 'ट्रांसफ़र';
+
+  @override
+  String transferSendingTo(String name) {
+    return '$name को भेजा जा रहा है';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return '$name से प्राप्त हो रहा है';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$total में से $done';
+  }
+
+  @override
+  String get transferText => 'टेक्स्ट';
+
+  @override
+  String get transferImage => 'छवि';
 }

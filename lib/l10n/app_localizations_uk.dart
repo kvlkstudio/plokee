@@ -124,32 +124,32 @@ class AppLocalizationsUk extends AppLocalizations {
   String get requestDeclinedOrTimedOut => 'Запит відхилено або час вичерпано.';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'Пристрій не видно? Додати за IP';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'Додати пристрій за IP';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'Деякі мережі приховують пристрої один від одного. Введіть IP-адресу іншого пристрою, щоб сполучитися напряму.';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'IP-адреса';
 
   @override
-  String get add => 'Add';
+  String get add => 'Додати';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'Пошук…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'Цей пристрій: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return 'За адресою $address пристрій Plokee не знайдено';
   }
 
   @override
@@ -286,4 +286,88 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get notificationText => 'На зв’язку зі сполученими пристроями';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return 'На зв’язку $count з $total пристроїв';
+  }
+
+  @override
+  String get notificationPaused => 'Синхронізацію призупинено';
+
+  @override
+  String get notificationPause => 'Пауза';
+
+  @override
+  String get notificationResume => 'Продовжити';
+
+  @override
+  String get syncRules => 'Правила синхронізації';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'Що цей пристрій синхронізує з «$name»';
+  }
+
+  @override
+  String get ruleSendTo => 'Надсилати йому';
+
+  @override
+  String get ruleSendToExplanation =>
+      'Передавати скопійоване тут на цей пристрій.';
+
+  @override
+  String get ruleReceiveFrom => 'Отримувати від нього';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'Застосовувати скопійоване там до цього буфера обміну.';
+
+  @override
+  String get ruleKinds => 'Типи';
+
+  @override
+  String get ruleText => 'Текст';
+
+  @override
+  String get ruleImages => 'Зображення';
+
+  @override
+  String get ruleFiles => 'Файли';
+
+  @override
+  String get ruleSummaryNothing => 'Нічого';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'Лише приймання';
+
+  @override
+  String get ruleSummarySendOnly => 'Лише надсилання';
+
+  @override
+  String get ruleSummaryCustom => 'Власні правила';
+
+  @override
+  String get transfers => 'Передавання';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'Надсилання на $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'Отримання від $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done з $total';
+  }
+
+  @override
+  String get transferText => 'Текст';
+
+  @override
+  String get transferImage => 'Зображення';
 }

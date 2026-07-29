@@ -117,7 +117,7 @@ void main() {
 
     final result = await service.applyRemote(
       ClipPayload.files(
-        [ClipFile(name: 'note.txt', bytes: Uint8List.fromList([1, 2, 3]))],
+        [ClipFile.inline(name: 'note.txt', bytes: Uint8List.fromList([1, 2, 3]))],
         ts: DateTime.now().millisecondsSinceEpoch,
         origin: 'peer',
       ),

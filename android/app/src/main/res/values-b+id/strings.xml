@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_label">Plokee</string>
+    <string name="tile_state_on">Sinkronisasi papan klip aktif</string>
+    <string name="tile_state_off">Sinkronisasi papan klip nonaktif</string>
+</resources>

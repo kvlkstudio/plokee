@@ -125,32 +125,32 @@ class AppLocalizationsId extends AppLocalizations {
       'Permintaan ditolak atau kedaluwarsa.';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'Perangkat tidak muncul? Tambahkan via IP';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'Tambahkan perangkat via IP';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'Beberapa jaringan menyembunyikan perangkat satu sama lain. Masukkan alamat IP perangkat lain untuk memasangkan langsung.';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'Alamat IP';
 
   @override
-  String get add => 'Add';
+  String get add => 'Tambah';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'Mencari…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'Perangkat ini: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return 'Tidak ada perangkat Plokee di $address';
   }
 
   @override
@@ -287,4 +287,88 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get notificationText => 'Terhubung ke perangkat terpasangkan';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$count dari $total perangkat terhubung';
+  }
+
+  @override
+  String get notificationPaused => 'Sinkron dijeda';
+
+  @override
+  String get notificationPause => 'Jeda';
+
+  @override
+  String get notificationResume => 'Lanjutkan';
+
+  @override
+  String get syncRules => 'Aturan sinkronisasi';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'Yang disinkronkan perangkat ini dengan “$name”';
+  }
+
+  @override
+  String get ruleSendTo => 'Kirim ke sana';
+
+  @override
+  String get ruleSendToExplanation =>
+      'Kirim yang Anda salin di sini ke perangkat itu.';
+
+  @override
+  String get ruleReceiveFrom => 'Terima dari sana';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'Terapkan yang disalin di sana ke papan klip ini.';
+
+  @override
+  String get ruleKinds => 'Jenis';
+
+  @override
+  String get ruleText => 'Teks';
+
+  @override
+  String get ruleImages => 'Gambar';
+
+  @override
+  String get ruleFiles => 'Berkas';
+
+  @override
+  String get ruleSummaryNothing => 'Tidak ada';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'Hanya terima';
+
+  @override
+  String get ruleSummarySendOnly => 'Hanya kirim';
+
+  @override
+  String get ruleSummaryCustom => 'Kustom';
+
+  @override
+  String get transfers => 'Transfer';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'Mengirim ke $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'Menerima dari $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done dari $total';
+  }
+
+  @override
+  String get transferText => 'Teks';
+
+  @override
+  String get transferImage => 'Gambar';
 }

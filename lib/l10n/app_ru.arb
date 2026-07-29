@@ -86,5 +86,31 @@
   "notificationChannelName": "Синхронизация буфера обмена",
   "notificationChannelDescription": "Держит Plokee на связи со связанными устройствами.",
   "notificationTitle": "Plokee синхронизирует",
-  "notificationText": "На связи со связанными устройствами"
+  "notificationText": "На связи со связанными устройствами",
+  "notificationConnected": "На связи {count} из {total} устройств",
+  "notificationPaused": "Синхронизация на паузе",
+  "notificationPause": "Пауза",
+  "notificationResume": "Продолжить",
+
+  "syncRules": "Правила синхронизации",
+  "syncRulesFor": "Что это устройство синхронизирует с «{name}»",
+  "ruleSendTo": "Отправлять ему",
+  "ruleSendToExplanation": "Передавать скопированное здесь на это устройство.",
+  "ruleReceiveFrom": "Получать от него",
+  "ruleReceiveFromExplanation": "Применять скопированное там к этому буферу обмена.",
+  "ruleKinds": "Типы",
+  "ruleText": "Текст",
+  "ruleImages": "Изображения",
+  "ruleFiles": "Файлы",
+  "ruleSummaryNothing": "Ничего",
+  "ruleSummaryReceiveOnly": "Только приём",
+  "ruleSummarySendOnly": "Только отправка",
+  "ruleSummaryCustom": "Свои правила",
+
+  "transfers": "Передачи",
+  "transferSendingTo": "Отправка на {name}",
+  "transferReceivingFrom": "Приём от {name}",
+  "transferProgress": "{done} из {total}",
+  "transferText": "Текст",
+  "transferImage": "Изображение"
 }

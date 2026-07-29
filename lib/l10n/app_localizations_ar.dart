@@ -123,32 +123,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get requestDeclinedOrTimedOut => 'تم رفض الطلب أو انتهت مهلته.';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'الجهاز لا يظهر؟ أضِفه عبر IP';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'إضافة جهاز عبر IP';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'بعض الشبكات تخفي الأجهزة عن بعضها. أدخل عنوان IP للجهاز الآخر للاقتران مباشرة.';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'عنوان IP';
 
   @override
-  String get add => 'Add';
+  String get add => 'إضافة';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'جارٍ البحث…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'هذا الجهاز: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return 'لم يُعثر على جهاز Plokee على $address';
   }
 
   @override
@@ -285,4 +285,87 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notificationText => 'متصل بأجهزتك المقترنة';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$count من $total أجهزة متصلة';
+  }
+
+  @override
+  String get notificationPaused => 'المزامنة متوقفة مؤقتًا';
+
+  @override
+  String get notificationPause => 'إيقاف مؤقت';
+
+  @override
+  String get notificationResume => 'استئناف';
+
+  @override
+  String get syncRules => 'قواعد المزامنة';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'ما يزامنه هذا الجهاز مع ”$name“';
+  }
+
+  @override
+  String get ruleSendTo => 'الإرسال إليه';
+
+  @override
+  String get ruleSendToExplanation => 'إرسال ما تنسخه هنا إلى ذلك الجهاز.';
+
+  @override
+  String get ruleReceiveFrom => 'الاستقبال منه';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'تطبيق ما يُنسخ هناك على هذه الحافظة.';
+
+  @override
+  String get ruleKinds => 'الأنواع';
+
+  @override
+  String get ruleText => 'نص';
+
+  @override
+  String get ruleImages => 'صور';
+
+  @override
+  String get ruleFiles => 'ملفات';
+
+  @override
+  String get ruleSummaryNothing => 'لا شيء';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'الاستقبال فقط';
+
+  @override
+  String get ruleSummarySendOnly => 'الإرسال فقط';
+
+  @override
+  String get ruleSummaryCustom => 'مخصص';
+
+  @override
+  String get transfers => 'عمليات النقل';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'جارٍ الإرسال إلى $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'جارٍ الاستقبال من $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done من $total';
+  }
+
+  @override
+  String get transferText => 'نص';
+
+  @override
+  String get transferImage => 'صورة';
 }

@@ -30,7 +30,10 @@ paired devices communicate directly with each other.
 ## Features
 
 - Automatic clipboard syncing on desktop platforms.
-- Text, PNG image, and file transfer up to 32 MB per clipboard item.
+- Text, PNG image, and file transfer with no size limit: large files are
+  streamed chunk by chunk straight off disk, with progress shown in the app.
+- Per-device sync rules: choose separately for each paired device whether to
+  send to it, receive from it, and which kinds of clip may cross.
 - Secure device pairing with a human-verifiable six-digit code.
 - Automatic local-network discovery using Bonjour/mDNS and UDP multicast.
 - End-to-end encrypted transport between paired devices.
@@ -40,6 +43,9 @@ paired devices communicate directly with each other.
 - Custom device names and paired-device management.
 - Received files are saved to `Downloads/Plokee` on desktop and to the app
   documents directory on mobile.
+- Android quick settings tile and a foreground-service notification with a
+  pause/resume button and a live connected-device count.
+- iOS Share Extension, Shortcuts actions, and a home screen widget.
 
 ## Supported platforms
 
@@ -48,8 +54,8 @@ paired devices communicate directly with each other.
 | macOS    | Supported | Automatic clipboard watching and system tray support.             |
 | Windows  | Supported | Automatic clipboard watching and system tray support.             |
 | Linux    | Supported | Automatic clipboard watching and system tray support.             |
-| Android  | Supported | Clipboard access is available while the app is in the foreground. |
-| iOS      | Supported | iOS may ask for paste permission; manual sending is the default.  |
+| Android  | Supported | Clipboard access is available while the app is in the foreground. Quick settings tile for pausing sync. |
+| iOS      | Supported | iOS may ask for paste permission; manual sending is the default. Share Extension, Shortcuts, and widget. |
 
 ## How it works
 
@@ -72,6 +78,11 @@ Plokee is designed for direct communication within your local network.
   what protects pairing from man-in-the-middle attacks.
 - Clipboard payloads are encrypted with AES-256-GCM. Per-pair keys are
   derived from the shared secret with HKDF.
+- Streamed transfers are sealed the same way, one chunk at a time, and each
+  chunk carries its own position inside the sealed part — a reordered or
+  replayed chunk is rejected rather than corrupting the file.
+- File names from a paired device are sanitised before anything is written, so
+  a name can never place a file outside the download directory.
 - Connections use an HMAC-SHA256 challenge-response handshake.
 - Network discovery announcements never contain clipboard contents; they only
   expose the public information required to discover a device.
@@ -79,7 +90,9 @@ Plokee is designed for direct communication within your local network.
 
 > **Important:** A paired device can receive items copied while sync is
 > enabled. Pair only trusted devices and disable sync from the tray menu or
-> Settings whenever it is not needed.
+> Settings whenever it is not needed. Per-device sync rules (⋯ → **Sync
+> rules** on a paired device) narrow this further: each side decides for
+> itself what it sends and what it accepts, and neither can widen the other's.
 
 ## Mobile behaviour
 
@@ -92,6 +105,38 @@ Mobile operating systems limit background clipboard access.
   in-app send action when you want to share the current clipboard item.
 
 Receiving items works while the app is active on both mobile platforms.
+
+### Android controls outside the app
+
+Add the **Plokee** tile to the quick settings panel to pause and resume sync
+without opening the app. The tile and the app read and write the same setting,
+so they agree whether or not Plokee is running.
+
+While **Keep syncing in background** is on, the foreground-service
+notification shows how many paired devices are connected and carries a
+Pause/Resume button. The service keeps running while sync is paused — that
+notification is the way back from a pause made from the tile. Turn off
+**Keep syncing in background** to remove the notification entirely.
+
+### iOS Share Extension, Shortcuts, and widget
+
+- **Share Extension:** share text, links, images, or files to Plokee from any
+  app. The item is stored in the shared App Group container and sent to your
+  paired devices the next time Plokee is in the foreground — iOS does not let
+  an extension open network connections on the app's behalf.
+- **Shortcuts:** *Send clipboard* opens Plokee and sends the current clipboard
+  (iOS only allows a pasteboard read in the foreground). *Set clipboard sync*
+  records a pause or resume that is applied the next time Plokee runs.
+- **Widget:** small, medium, and large home screen widgets showing sync status
+  and the most recent clips. It is refreshed by the app, so it updates while
+  Plokee is running rather than on a system schedule.
+
+These extensions require the `group.com.kvlkstudio.plokee` App Group
+capability on the app and both extension bundle IDs
+(`com.kvlkstudio.plokee.Share`, `com.kvlkstudio.plokee.Widget`) in the Apple
+Developer portal. The Xcode targets are generated by
+`ruby scripts/add_ios_extensions.rb`; re-run it if `flutter create` ever
+regenerates `ios/Runner.xcodeproj`.
 
 ## Downloading releases
 
@@ -184,8 +229,9 @@ flutter analyze
 flutter test
 ```
 
-The test suite covers models, settings, history, cryptography, and an
-end-to-end sync scenario.
+The test suite covers models, settings, history, cryptography, chunked
+transfers (including a file past the old 32 MB ceiling), per-device sync
+rules, and end-to-end sync scenarios.
 
 ## Local builds
 
@@ -220,10 +266,18 @@ lib/
     crypto.dart                # keys, encryption, and authentication
     discovery.dart             # local network device discovery
     sync_engine.dart           # pairing and encrypted transport
+    transfer.dart              # chunked transfers for clips of any size
+    android_controls.dart      # quick settings tile bridge
+    ios_extensions.dart        # Share Extension, Shortcuts, and widget bridge
     history_store.dart         # local clipboard history
     settings_store.dart        # preferences and paired devices
     models.dart                # protocol and data models
     ui/                        # application interface
+android/app/src/main/kotlin/     # multicast lock, quick settings tile
+ios/PlokeeShare/                 # Share Extension target
+ios/PlokeeWidget/                # WidgetKit target
+ios/PlokeeShared/                # code shared by the app and its extensions
+scripts/add_ios_extensions.rb    # generates the iOS extension Xcode targets
 assets/
   plokee-logo.svg              # brand logo used by this README
   tray_icon.*                  # system tray icons
@@ -244,7 +298,9 @@ isolation if devices cannot discover each other.
 
 ## Known limitations
 
-- Files larger than 32 MB are not transferred.
+- A device running a version older than 1.1 cannot stream, so clips sent to it
+  still stop at 32 MB. Both sides need the current version for unlimited
+  transfers; the capability is negotiated per connection.
 - On macOS, synchronising arbitrary files from the clipboard may require
   relaxed sandbox restrictions in self-distributed builds. Text and images
   work without this change.
@@ -258,10 +314,11 @@ isolation if devices cannot discover each other.
 - [x] macOS, Windows, Linux, Android, and iOS support.
 - [x] Bonjour/mDNS discovery and secure pairing.
 - [x] Desktop tray controls and access to recent clipboard items.
-- [ ] Android quick settings and more complete foreground-service controls.
-- [ ] iOS Share Extension, Shortcuts, and Widget support.
-- [ ] Per-device sync rules.
+- [x] Android quick settings and more complete foreground-service controls.
+- [x] iOS Share Extension, Shortcuts, and Widget support.
+- [x] Per-device sync rules.
 - [x] Additional interface localisations.
+- [x] Transfers with no size limit.
 
 ## Contributing
 

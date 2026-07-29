@@ -125,32 +125,32 @@ class AppLocalizationsIt extends AppLocalizations {
       'La richiesta è stata rifiutata o è scaduta.';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'Dispositivo non visibile? Aggiungi tramite IP';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'Aggiungi dispositivo tramite IP';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'Alcune reti nascondono i dispositivi l’uno all’altro. Inserisci l’indirizzo IP dell’altro dispositivo per associarlo direttamente.';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'Indirizzo IP';
 
   @override
-  String get add => 'Add';
+  String get add => 'Aggiungi';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'Ricerca…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'Questo dispositivo: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return 'Nessun dispositivo Plokee trovato a $address';
   }
 
   @override
@@ -289,4 +289,88 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get notificationText => 'Connesso ai tuoi dispositivi associati';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$count di $total dispositivi connessi';
+  }
+
+  @override
+  String get notificationPaused => 'Sync in pausa';
+
+  @override
+  String get notificationPause => 'Pausa';
+
+  @override
+  String get notificationResume => 'Riprendi';
+
+  @override
+  String get syncRules => 'Regole di sincronizzazione';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'Cosa sincronizza questo dispositivo con “$name”';
+  }
+
+  @override
+  String get ruleSendTo => 'Invia a esso';
+
+  @override
+  String get ruleSendToExplanation =>
+      'Invia a quel dispositivo ciò che copi qui.';
+
+  @override
+  String get ruleReceiveFrom => 'Ricevi da esso';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'Applica a questi appunti ciò che copia là.';
+
+  @override
+  String get ruleKinds => 'Tipi';
+
+  @override
+  String get ruleText => 'Testo';
+
+  @override
+  String get ruleImages => 'Immagini';
+
+  @override
+  String get ruleFiles => 'File';
+
+  @override
+  String get ruleSummaryNothing => 'Niente';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'Solo ricezione';
+
+  @override
+  String get ruleSummarySendOnly => 'Solo invio';
+
+  @override
+  String get ruleSummaryCustom => 'Personalizzato';
+
+  @override
+  String get transfers => 'Trasferimenti';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'Invio a $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'Ricezione da $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done di $total';
+  }
+
+  @override
+  String get transferText => 'Testo';
+
+  @override
+  String get transferImage => 'Immagine';
 }

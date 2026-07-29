@@ -125,32 +125,32 @@ class AppLocalizationsNl extends AppLocalizations {
       'Het verzoek is geweigerd of verlopen.';
 
   @override
-  String get addByIp => 'Device not showing up? Add by IP';
+  String get addByIp => 'Apparaat niet zichtbaar? Toevoegen via IP';
 
   @override
-  String get addByIpTitle => 'Add device by IP';
+  String get addByIpTitle => 'Apparaat toevoegen via IP';
 
   @override
   String get addByIpExplanation =>
-      'Some networks hide devices from each other. Enter the other device\'s IP address to pair directly.';
+      'Sommige netwerken verbergen apparaten voor elkaar. Voer het IP-adres van het andere apparaat in om direct te koppelen.';
 
   @override
-  String get ipAddress => 'IP address';
+  String get ipAddress => 'IP-adres';
 
   @override
-  String get add => 'Add';
+  String get add => 'Toevoegen';
 
   @override
-  String get searching => 'Searching…';
+  String get searching => 'Zoeken…';
 
   @override
   String thisDeviceAddress(String address) {
-    return 'This device: $address';
+    return 'Dit apparaat: $address';
   }
 
   @override
   String noDeviceAtIp(String address) {
-    return 'No Plokee device found at $address';
+    return 'Geen Plokee-apparaat gevonden op $address';
   }
 
   @override
@@ -291,4 +291,88 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get notificationText => 'Verbonden met je gekoppelde apparaten';
+
+  @override
+  String notificationConnected(int count, int total) {
+    return '$count van $total apparaten verbonden';
+  }
+
+  @override
+  String get notificationPaused => 'Sync gepauzeerd';
+
+  @override
+  String get notificationPause => 'Pauzeren';
+
+  @override
+  String get notificationResume => 'Hervatten';
+
+  @override
+  String get syncRules => 'Syncregels';
+
+  @override
+  String syncRulesFor(String name) {
+    return 'Wat dit apparaat synchroniseert met “$name”';
+  }
+
+  @override
+  String get ruleSendTo => 'Ernaartoe sturen';
+
+  @override
+  String get ruleSendToExplanation =>
+      'Stuur wat je hier kopieert naar dat apparaat.';
+
+  @override
+  String get ruleReceiveFrom => 'Ervan ontvangen';
+
+  @override
+  String get ruleReceiveFromExplanation =>
+      'Pas toe op dit klembord wat daar wordt gekopieerd.';
+
+  @override
+  String get ruleKinds => 'Soorten';
+
+  @override
+  String get ruleText => 'Tekst';
+
+  @override
+  String get ruleImages => 'Afbeeldingen';
+
+  @override
+  String get ruleFiles => 'Bestanden';
+
+  @override
+  String get ruleSummaryNothing => 'Niets';
+
+  @override
+  String get ruleSummaryReceiveOnly => 'Alleen ontvangen';
+
+  @override
+  String get ruleSummarySendOnly => 'Alleen verzenden';
+
+  @override
+  String get ruleSummaryCustom => 'Aangepast';
+
+  @override
+  String get transfers => 'Overdrachten';
+
+  @override
+  String transferSendingTo(String name) {
+    return 'Verzenden naar $name';
+  }
+
+  @override
+  String transferReceivingFrom(String name) {
+    return 'Ontvangen van $name';
+  }
+
+  @override
+  String transferProgress(String done, String total) {
+    return '$done van $total';
+  }
+
+  @override
+  String get transferText => 'Tekst';
+
+  @override
+  String get transferImage => 'Afbeelding';
 }

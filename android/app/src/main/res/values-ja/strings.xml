@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_label">Plokee</string>
+    <string name="tile_state_on">クリップボード同期オン</string>
+    <string name="tile_state_off">クリップボード同期オフ</string>
+</resources>

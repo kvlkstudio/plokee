@@ -25,6 +25,12 @@ paired devices communicate directly with each other.
       alt="Download on the App Store"
       height="51">
   </a>
+  <a href="https://play.google.com/store/apps/details?id=com.kvlkstudio.plokee">
+    <img
+      src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+      alt="Get it on Google Play"
+      height="75">
+  </a>
 </p>
 
 ## Features
@@ -154,6 +160,12 @@ Apple builds are available from the App Store:
       src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
       alt="Download on the App Store"
       height="51">
+  </a>
+  <a href="https://play.google.com/store/apps/details?id=com.kvlkstudio.plokee">
+    <img
+      src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+      alt="Get it on Google Play"
+      height="75">
   </a>
 </p>
 

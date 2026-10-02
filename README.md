@@ -27,9 +27,9 @@ paired devices communicate directly with each other.
   </a>
   <a href="https://play.google.com/store/apps/details?id=com.kvlkstudio.plokee">
     <img
-      src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+      src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
       alt="Get it on Google Play"
-      height="75">
+      height="51">
   </a>
 </p>
 
@@ -163,9 +163,9 @@ Apple builds are available from the App Store:
   </a>
   <a href="https://play.google.com/store/apps/details?id=com.kvlkstudio.plokee">
     <img
-      src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+      src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
       alt="Get it on Google Play"
-      height="75">
+      height="51">
   </a>
 </p>
 
